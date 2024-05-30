@@ -3,6 +3,7 @@ package com.aey.papers_and_notes_api.domain.entities;
 import lombok.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Builder
 @Getter
@@ -10,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Brand {
-    private Integer brandId;
+    private UUID brandId;
     private String name;
     private Boolean isActive;
     private Date createdAt;
