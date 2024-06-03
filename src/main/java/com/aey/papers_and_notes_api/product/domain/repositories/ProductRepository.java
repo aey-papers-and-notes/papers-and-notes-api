@@ -1,6 +1,6 @@
-package com.aey.papers_and_notes_api.domain.repositories;
+package com.aey.papers_and_notes_api.product.domain.repositories;
 
-import com.aey.papers_and_notes_api.infrastructure.persistence.models.ProductJpa;
+import com.aey.papers_and_notes_api.product.persistence.models.ProductJpa;
 
 import java.util.List;
 import java.util.Optional;

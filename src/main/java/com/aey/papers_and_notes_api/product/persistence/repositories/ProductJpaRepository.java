@@ -1,6 +1,6 @@
-package com.aey.papers_and_notes_api.infrastructure.persistence.repositories;
+package com.aey.papers_and_notes_api.product.persistence.repositories;
 
-import com.aey.papers_and_notes_api.infrastructure.persistence.models.ProductJpa;
+import com.aey.papers_and_notes_api.product.persistence.models.ProductJpa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
