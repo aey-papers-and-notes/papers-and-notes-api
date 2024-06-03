@@ -1,8 +1,8 @@
-package com.aey.papers_and_notes_api.infrastructure.persistence.dao;
+package com.aey.papers_and_notes_api.product.persistence.dao;
 
-import com.aey.papers_and_notes_api.domain.repositories.ProductRepository;
-import com.aey.papers_and_notes_api.infrastructure.persistence.models.ProductJpa;
-import com.aey.papers_and_notes_api.infrastructure.persistence.repositories.ProductJpaRepository;
+import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
+import com.aey.papers_and_notes_api.product.persistence.models.ProductJpa;
+import com.aey.papers_and_notes_api.product.persistence.repositories.ProductJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

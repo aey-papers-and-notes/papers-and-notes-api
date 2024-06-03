@@ -1,4 +1,4 @@
-package com.aey.papers_and_notes_api.domain.entities;
+package com.aey.papers_and_notes_api.product.domain.entities;
 
 import lombok.*;
 
@@ -10,10 +10,9 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OderDetail {
-    private UUID orderDetailId;
-    private Integer quantity;
-    private Float total;
+public class Order {
+    private UUID orderId;
+    private Integer orderStatusId;
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
