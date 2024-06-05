@@ -1,4 +1,4 @@
-package com.aey.papers_and_notes_api.product.persistence.models;
+package com.aey.papers_and_notes_api.product.infrastructure.persistence.models;
 
 import jakarta.persistence.*;
 import lombok.*;
