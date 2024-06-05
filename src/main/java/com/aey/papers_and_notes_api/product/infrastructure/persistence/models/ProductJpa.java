@@ -1,5 +1,6 @@
-package com.aey.papers_and_notes_api.product.persistence.models;
+package com.aey.papers_and_notes_api.product.infrastructure.persistence.models;
 
+import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -62,5 +63,33 @@ public class ProductJpa {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<CategoryJpa> categories;
+
+    public static ProductJpa fromEntity(Product product) {
+        return ProductJpa.builder()
+                .productId(product.getProductId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .stock(product.getStock())
+                .price(product.getPrice())
+                .imagesUrl(product.getImagesUrl())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
+                .isActive(product.getIsActive())
+                .build();
+    }
+
+    public Product toEntity() {
+        return Product.builder()
+                .productId(productId)
+                .name(name)
+                .description(description)
+                .stock(stock)
+                .price(price)
+                .imagesUrl(imagesUrl)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .isActive(isActive)
+                .build();
+    }
 }
 
