@@ -15,7 +15,7 @@ import java.util.Date;
 public class OrderStatusJpa {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "order_status_id", unique = true)
     private Integer orderStatusId;
 
