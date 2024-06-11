@@ -1,1 +1,17 @@
+version: '3.8'
 services:
+  db:
+    container_name: papers_and_notes_image
+    image: postgres:15.2
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=papers_and_notes_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+volumes:
+  postgres:
+    driver: local
