@@ -64,6 +64,14 @@ public class ProductJpa {
     )
     private List<CategoryJpa> categories;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "prod05_tags",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<TagJpa> tags;
+
     public static ProductJpa fromEntity(Product product) {
         return ProductJpa.builder()
                 .productId(product.getProductId())
