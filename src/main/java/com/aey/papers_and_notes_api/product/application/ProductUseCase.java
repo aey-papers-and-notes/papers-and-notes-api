@@ -1,5 +1,6 @@
 package com.aey.papers_and_notes_api.product.application;
 
+import com.aey.papers_and_notes_api.common.dtos.PaginationDto;
 import com.aey.papers_and_notes_api.common.error.ErrorCode;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
@@ -23,16 +24,23 @@ public class ProductUseCase implements ProductService {
     }
 
     @Override
-    public Either<ErrorCode, List<ProductDto>> getAllProducts() {
-        List<ProductDto> products = productRepository.findAllProducts()
+    public PaginationDto<ProductDto> getAllProducts(Integer limit, Integer offset) {
+        limit = limit == null ? 10 : limit;
+        offset = offset == null ? 0 : offset;
+        List<ProductDto> products = productRepository.findAllProducts(limit, offset)
                 .stream()
                 .map(ProductJpa::toEntity)
                 .map(ProductDto::fromEntity)
                 .toList();
-        if (products.isEmpty()) {
-            return Either.left(ErrorCode.NOT_FOUND);
-        }
-        return Either.right(products);
+        Integer totalProducts = productRepository.countAllAvailableProducts();
+        Integer lastPage = totalProducts % limit == 0 ? totalProducts / limit : (totalProducts / limit) + 1;
+        Integer page = (offset / limit) + 1;
+        return PaginationDto.<ProductDto>builder()
+                .totalItems(totalProducts)
+                .lastPage(lastPage)
+                .items(products)
+                .page(page)
+                .build();
     }
 
     @Override

@@ -7,7 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductRepository {
-    List<ProductJpa> findAllProducts();
+    List<ProductJpa> findAllProducts(Integer limit, Integer offset);
+    Integer countAllAvailableProducts();
     Optional<ProductJpa> findOneProductById(UUID productId);
     Optional<ProductJpa> createProduct(ProductJpa product);
     Optional<ProductJpa> updateProduct(ProductJpa product);
