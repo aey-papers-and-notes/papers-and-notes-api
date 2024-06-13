@@ -6,11 +6,11 @@ import com.aey.papers_and_notes_api.product.infrastructure.persistence.queries.P
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.repositories.ProductJpaRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-@Component
+@Repository
 public class ProductDao implements ProductRepository {
 
     private final ProductJpaRepository productJpaRepository;
@@ -25,6 +25,7 @@ public class ProductDao implements ProductRepository {
         this.entityManager = entityManager;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<ProductJpa> findAllProducts(Integer limit, Integer offset) {
         List<Object[]> result = this.entityManager
@@ -37,19 +38,18 @@ public class ProductDao implements ProductRepository {
             return new ArrayList<>();
         }
 
-        return result.stream().map(r -> (
-                ProductJpa.builder()
-                        .productId((UUID) r[0])
-                        .name((String) r[1])
-                        .description((String) r[2])
-                        .stock((Integer) r[3])
-                        .price((Float) r[4])
-                        .imagesUrl((List<String>) r[5])
-                        .createdAt((Date) r[6])
-                        .updatedAt((Date) r[7])
-                        .isActive((Boolean) r[8])
-                        .build()
-        )).toList();
+        return result.stream().map(r -> ProductJpa.builder()
+                .productId((UUID) r[0])
+                .name((String) r[1])
+                .description((String) r[2])
+                .price((Float) r[3])
+                .stock((Integer) r[4])
+                .imagesUrl(Arrays.asList((String[]) r[5]))
+                .createdAt((Date) r[6])
+                .updatedAt((Date) r[7])
+                .isActive((Boolean) r[8])
+                .brandId((Integer) r[9])
+                .build()).toList();
     }
 
     public Integer countAllAvailableProducts() {

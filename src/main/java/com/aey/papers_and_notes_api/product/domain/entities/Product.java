@@ -21,4 +21,5 @@ public class Product {
     private Date createdAt;
     private Date updatedAt;
     private Boolean isActive;
+    private Integer brandId;
 }

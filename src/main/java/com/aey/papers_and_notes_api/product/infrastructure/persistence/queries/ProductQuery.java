@@ -13,7 +13,8 @@ public class ProductQuery {
             "prd_tx_images_url as imageUrl, " +
             "prd_dt_created_at as createdAt, " +
             "prd_dt_updated_at as updatedAt, " +
-            "prd_st_is_active as isActive " +
+            "prd_st_is_active as isActive, " +
+            "prd_fk_brand_id as brandId " +
             "from prod01_products " +
             "where (prd_st_is_active = true) " +
             "limit coalesce(:limit, 10) " +
