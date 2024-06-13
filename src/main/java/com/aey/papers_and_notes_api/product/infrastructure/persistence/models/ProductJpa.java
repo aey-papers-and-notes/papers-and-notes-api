@@ -1,9 +1,13 @@
 package com.aey.papers_and_notes_api.product.infrastructure.persistence.models;
 
+import com.aey.papers_and_notes_api.common.utils.StringListConverter;
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.usertype.UserType;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "prod01_products")
-public class ProductJpa {
+public class ProductJpa implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,8 +38,7 @@ public class ProductJpa {
     @Column(name = "prd_nu_stock")
     private Integer stock;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "prd_tx_images_url")
+    @Column(name = "prd_tx_images_url", columnDefinition = "text[]")
     private List<String> imagesUrl;
 
     @Column(name = "prd_dt_created_at")
@@ -47,9 +50,12 @@ public class ProductJpa {
     @Column(name = "prd_st_is_active")
     private Boolean isActive;
 
+    @Column(name = "prd_fk_brand_id")
+    private Integer brandId;
+
     @ManyToOne()
     @JoinColumn(
-            name = "product_id",
+            name = "prd_fk_brand_id",
             referencedColumnName = "brand_id",
             insertable = false,
             updatable = false
@@ -83,6 +89,7 @@ public class ProductJpa {
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .isActive(product.getIsActive())
+                .brandId(product.getBrandId())
                 .build();
     }
 
@@ -97,6 +104,7 @@ public class ProductJpa {
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
                 .isActive(isActive)
+                .brandId(brandId)
                 .build();
     }
 }

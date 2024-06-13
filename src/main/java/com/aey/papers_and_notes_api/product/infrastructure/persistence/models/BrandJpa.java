@@ -17,8 +17,8 @@ public class BrandJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "brand_id")
-    private UUID brandId;
+    @Column(name = "brand_id", unique = true)
+    private Integer brandId;
 
     @Column(name = "brd_tx_name")
     private String name;

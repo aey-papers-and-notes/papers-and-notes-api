@@ -42,6 +42,8 @@ public class ProductDto {
     @JsonProperty
     private Boolean isActive;
 
+    @JsonProperty
+    private Integer brandId;
 
     public static ProductDto fromEntity(Product product) {
         return ProductDto.builder()
@@ -54,6 +56,7 @@ public class ProductDto {
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .isActive(product.getIsActive())
+                .brandId(product.getBrandId())
                 .build();
     }
 
@@ -68,6 +71,7 @@ public class ProductDto {
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
                 .isActive(isActive)
+                .brandId(brandId)
                 .build();
     }
 }
