@@ -2,12 +2,12 @@ package com.aey.papers_and_notes_api.product.application;
 
 import com.aey.papers_and_notes_api.common.dtos.PaginationDto;
 import com.aey.papers_and_notes_api.common.error.ErrorCode;
+import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.models.ProductJpa;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dto.ProductDto;
 import io.vavr.control.Either;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,17 +29,28 @@ public class ProductUseCase implements ProductService {
         offset = offset == null ? 0 : offset;
         List<ProductDto> products = productRepository.findAllProducts(limit, offset)
                 .stream()
-                .map(ProductJpa::toEntity)
-                .map(ProductDto::fromEntity)
+                .map(product -> {
+                    List<ProductImage> productImages = productRepository.findAllProductImagesByProductId(product.getProductId());
+                    return ProductDto.builder()
+                            .productId(product.getProductId())
+                            .name(product.getName())
+                            .description(product.getDescription())
+                            .stock(product.getStock())
+                            .price(product.getPrice())
+                            .createdAt(product.getCreatedAt())
+                            .updatedAt(product.getUpdatedAt())
+                            .isActive(product.getIsActive())
+                            .brandId(product.getBrandId())
+                            .productImages(productImages)
+                            .build();
+                })
                 .toList();
-        Integer totalProducts = productRepository.countAllAvailableProducts();
-        Integer lastPage = PaginationDto.calcLastPage(limit, totalProducts);
-        Integer page = PaginationDto.calcPage(limit, totalProducts);
+        Integer totalItems = productRepository.countAllAvailableProducts();
         return PaginationDto.<ProductDto>builder()
-                .totalItems(totalProducts)
-                .lastPage(lastPage)
+                .totalItems(totalItems)
+                .lastPage(PaginationDto.calcLastPage(limit, totalItems))
+                .page(PaginationDto.calcPage(limit, offset))
                 .items(products)
-                .page(page)
                 .build();
     }
 

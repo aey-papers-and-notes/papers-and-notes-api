@@ -17,9 +17,9 @@ public class Product {
     private String description;
     private Float price;
     private Integer stock;
-    private List<String> imagesUrl;
     private Date createdAt;
     private Date updatedAt;
     private Boolean isActive;
     private Integer brandId;
+    private List<ProductImage> productImages;
 }
