@@ -1,5 +1,7 @@
 package com.aey.papers_and_notes_api.product.infrastructure.persistence.dao;
 
+import com.aey.papers_and_notes_api.product.domain.entities.Product;
+import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.models.ProductJpa;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.queries.ProductQuery;
@@ -27,7 +29,7 @@ public class ProductDao implements ProductRepository {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<ProductJpa> findAllProducts(Integer limit, Integer offset) {
+    public List<Product> findAllProducts(Integer limit, Integer offset) {
         List<Object[]> result = this.entityManager
                 .createNativeQuery(ProductQuery.PAGINATION_PRODUCT)
                 .setParameter(ProductQuery.PARAM_PRODUCT_LIMIT, limit)
@@ -38,18 +40,18 @@ public class ProductDao implements ProductRepository {
             return new ArrayList<>();
         }
 
-        return result.stream().map(r -> ProductJpa.builder()
+        return result.stream().map(r -> Product.builder()
                 .productId((UUID) r[0])
                 .name((String) r[1])
                 .description((String) r[2])
                 .price((Float) r[3])
                 .stock((Integer) r[4])
-                .imagesUrl(Arrays.asList((String[]) r[5]))
-                .createdAt((Date) r[6])
-                .updatedAt((Date) r[7])
-                .isActive((Boolean) r[8])
-                .brandId((Integer) r[9])
-                .build()).toList();
+                .createdAt((Date) r[5])
+                .updatedAt((Date) r[6])
+                .isActive((Boolean) r[7])
+                .brandId((Integer) r[8])
+                .build()
+        ).toList();
     }
 
     public Integer countAllAvailableProducts() {
@@ -59,28 +61,27 @@ public class ProductDao implements ProductRepository {
         return count.intValue();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ProductImage> findAllProductImagesByProductId(UUID productId) {
+        List<Object[]> result = this.entityManager
+                .createNativeQuery(ProductQuery.PAGINATION_PRODUCT_IMAGES)
+                .setParameter(ProductQuery.PARAM_PRODUCT_ID, productId)
+                .getResultList();
+
+        if (result.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return result.stream().map(r -> ProductImage.builder()
+                .imageId((Integer) r[0])
+                .imageUrl((String) r[1])
+                .build()
+        ).toList();
+    }
+
     @Override
     public Optional<ProductJpa> findOneProductById(UUID productId) {
         return this.productJpaRepository.findById(productId);
-    }
-
-    @Override
-    public Optional<ProductJpa> createProduct(ProductJpa product) {
-        return Optional.of(this.productJpaRepository.saveAndFlush(product));
-    }
-
-    @Override
-    public Optional<ProductJpa> updateProduct(ProductJpa product) {
-        return Optional.of(this.productJpaRepository.saveAndFlush(product));
-    }
-
-    @Override
-    public void deleteProduct(UUID productId) {
-        this.productJpaRepository.deleteById(productId);
-    }
-
-    @Override
-    public void disableProduct(ProductJpa product) {
-
     }
 }

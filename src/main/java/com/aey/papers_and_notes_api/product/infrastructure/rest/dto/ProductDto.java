@@ -1,6 +1,7 @@
 package com.aey.papers_and_notes_api.product.infrastructure.rest.dto;
 
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
+import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -31,9 +32,6 @@ public class ProductDto {
     private Float price;
 
     @JsonProperty
-    private List<String> imageUrl;
-
-    @JsonProperty
     private Date createdAt;
 
     @JsonProperty
@@ -45,6 +43,10 @@ public class ProductDto {
     @JsonProperty
     private Integer brandId;
 
+    @JsonProperty
+    private List<ProductImage> productImages;
+
+
     public static ProductDto fromEntity(Product product) {
         return ProductDto.builder()
                 .productId(product.getProductId())
@@ -52,11 +54,11 @@ public class ProductDto {
                 .description(product.getDescription())
                 .stock(product.getStock())
                 .price(product.getPrice())
-                .imageUrl(product.getImagesUrl())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .isActive(product.getIsActive())
                 .brandId(product.getBrandId())
+                .productImages(product.getProductImages())
                 .build();
     }
 
@@ -67,7 +69,6 @@ public class ProductDto {
                 .description(description)
                 .stock(stock)
                 .price(price)
-                .imagesUrl(imageUrl)
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
                 .isActive(isActive)

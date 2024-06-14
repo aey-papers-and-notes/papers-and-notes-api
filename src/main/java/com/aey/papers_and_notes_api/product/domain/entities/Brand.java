@@ -3,6 +3,7 @@ package com.aey.papers_and_notes_api.product.domain.entities;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -16,4 +17,5 @@ public class Brand {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
+    private List<Product> products;
 }
