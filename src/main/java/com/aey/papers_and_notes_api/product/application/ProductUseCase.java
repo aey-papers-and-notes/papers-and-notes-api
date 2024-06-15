@@ -3,6 +3,7 @@ package com.aey.papers_and_notes_api.product.application;
 import com.aey.papers_and_notes_api.common.dtos.PaginationDto;
 import com.aey.papers_and_notes_api.common.error.ErrorCode;
 import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
+import com.aey.papers_and_notes_api.product.domain.repositories.ProductImageRepository;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.models.ProductJpa;
@@ -18,9 +19,14 @@ import java.util.UUID;
 public class ProductUseCase implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
 
-    ProductUseCase(ProductRepository productRepository) {
+    ProductUseCase(
+            ProductRepository productRepository,
+            ProductImageRepository productImageRepository
+    ) {
         this.productRepository = productRepository;
+        this.productImageRepository = productImageRepository;
     }
 
     @Override
@@ -30,19 +36,8 @@ public class ProductUseCase implements ProductService {
         List<ProductDto> products = productRepository.findAllProducts(limit, offset)
                 .stream()
                 .map(product -> {
-                    List<ProductImage> productImages = productRepository.findAllProductImagesByProductId(product.getProductId());
-                    return ProductDto.builder()
-                            .productId(product.getProductId())
-                            .name(product.getName())
-                            .description(product.getDescription())
-                            .stock(product.getStock())
-                            .price(product.getPrice())
-                            .createdAt(product.getCreatedAt())
-                            .updatedAt(product.getUpdatedAt())
-                            .isActive(product.getIsActive())
-                            .brandId(product.getBrandId())
-                            .productImages(productImages)
-                            .build();
+                    List<ProductImage> productImages = productImageRepository.findAllProductImagesByProductId(product.getProductId());
+                    return ProductDto.fromEntity(product, productImages);
                 })
                 .toList();
         Integer totalItems = productRepository.countAllAvailableProducts();
@@ -66,7 +61,7 @@ public class ProductUseCase implements ProductService {
         }
 
         @SuppressWarnings("OptionalGetWithoutIsPresent")
-        ProductDto productFound = product.map(p -> ProductDto.fromEntity(product.get().toEntity())).get();
+        ProductDto productFound = product.map(p -> ProductDto.fromEntity(product.get().toEntity(), null)).get();
         return Either.right(productFound);
     }
 }

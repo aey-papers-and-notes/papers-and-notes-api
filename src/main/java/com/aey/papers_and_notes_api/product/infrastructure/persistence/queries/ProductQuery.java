@@ -20,13 +20,6 @@ public class ProductQuery {
             "limit coalesce(:limit, 10) " +
             "offset coalesce(:offset, 0)";
 
-    public static final String PAGINATION_PRODUCT_IMAGES = "select " +
-            "image_id as imageId, " +
-            "img_tx_image_url as imageUrl, " +
-            "img_fk_product_id as productId " +
-            "from prod07_products_images " +
-            "where (img_fk_product_id = :productId);";
-
     public static final String COUNT_AVAILABLE_PRODUCTS = "select " +
             "count(*) " +
             "from prod01_products " +

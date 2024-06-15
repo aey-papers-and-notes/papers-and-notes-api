@@ -1,7 +1,6 @@
 package com.aey.papers_and_notes_api.product.infrastructure.persistence.dao;
 
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
-import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.models.ProductJpa;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.queries.ProductQuery;
@@ -59,25 +58,6 @@ public class ProductDao implements ProductRepository {
                 .createNativeQuery(ProductQuery.COUNT_AVAILABLE_PRODUCTS)
                 .getSingleResult();
         return count.intValue();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<ProductImage> findAllProductImagesByProductId(UUID productId) {
-        List<Object[]> result = this.entityManager
-                .createNativeQuery(ProductQuery.PAGINATION_PRODUCT_IMAGES)
-                .setParameter(ProductQuery.PARAM_PRODUCT_ID, productId)
-                .getResultList();
-
-        if (result.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return result.stream().map(r -> ProductImage.builder()
-                .imageId((Integer) r[0])
-                .imageUrl((String) r[1])
-                .build()
-        ).toList();
     }
 
     @Override
