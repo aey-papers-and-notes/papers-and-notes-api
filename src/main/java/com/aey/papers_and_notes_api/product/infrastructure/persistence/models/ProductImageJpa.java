@@ -43,4 +43,11 @@ public class ProductImageJpa implements Serializable {
                 .imageUrl(productImage.getImageUrl())
                 .build();
     }
+
+    public ProductImage toEntity() {
+        return ProductImage.builder()
+                .imageId(imageId)
+                .imageUrl(imageUrl)
+                .build();
+    }
 }
