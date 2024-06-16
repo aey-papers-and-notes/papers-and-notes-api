@@ -1,7 +1,9 @@
 package com.aey.papers_and_notes_api.product.application;
 
 import com.aey.papers_and_notes_api.common.dtos.PaginationDto;
+import com.aey.papers_and_notes_api.common.entities.Pagination;
 import com.aey.papers_and_notes_api.common.error.ErrorCode;
+import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductImageRepository;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
@@ -30,28 +32,29 @@ public class ProductUseCase implements ProductService {
     }
 
     @Override
-    public PaginationDto<ProductDto> getAllProducts(Integer limit, Integer offset) {
+    public Pagination<Product> getAllProducts(Integer limit, Integer offset) {
         limit = limit == null ? 10 : limit;
         offset = offset == null ? 0 : offset;
-        List<ProductDto> products = productRepository.findAllProducts(limit, offset)
+        List<Product> products = productRepository.findAllProducts(limit, offset)
                 .stream()
-                .map(product -> {
+                .peek(product -> {
                     List<ProductImage> productImages = productImageRepository.findAllProductImagesByProductId(product.getProductId());
-                    return ProductDto.fromEntity(product, productImages);
+                    product.setProductImages(productImages);
                 })
                 .toList();
-        Integer totalItems = productRepository.countAllAvailableProducts();
-        return PaginationDto.<ProductDto>builder()
-                .totalItems(totalItems)
-                .lastPage(PaginationDto.calcLastPage(limit, totalItems))
-                .page(PaginationDto.calcPage(limit, offset))
+        Integer totalProducts = productRepository.countAllAvailableProducts();
+        return Pagination.<Product>builder()
+                .totalItems(totalProducts)
+                .lastPage(Pagination.calcLastPage(limit, totalProducts))
+                .page(Pagination.calcPage(limit, offset))
                 .items(products)
                 .build();
     }
 
     @Override
-    public Either<ErrorCode, ProductDto> getProductById(UUID productId) {
-        Optional<ProductJpa> product = productRepository.findOneProductById(productId);
+    public Either<ErrorCode, Product> getProductById(UUID productId) {
+        Optional<Product> product = productRepository.findOneProductById(productId);
+        List<ProductImage> productImages = productImageRepository.findAllProductImagesByProductId(productId);
 
         if (product.isEmpty()) {
             return Either.left(ErrorCode.NOT_FOUND);
@@ -60,8 +63,8 @@ public class ProductUseCase implements ProductService {
             return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
         }
 
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
-        ProductDto productFound = product.map(p -> ProductDto.fromEntity(product.get().toEntity(), null)).get();
+        Product productFound = product.get();
+        productFound.setProductImages(productImages);
         return Either.right(productFound);
     }
 }

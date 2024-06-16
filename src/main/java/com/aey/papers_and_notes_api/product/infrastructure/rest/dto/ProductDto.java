@@ -47,7 +47,7 @@ public class ProductDto {
     private List<ProductImage> productImages;
 
 
-    public static ProductDto fromEntity(Product product, List<ProductImage> productImages) {
+    public static ProductDto fromEntity(Product product) {
         return ProductDto.builder()
                 .productId(product.getProductId())
                 .name(product.getName())
@@ -58,7 +58,7 @@ public class ProductDto {
                 .updatedAt(product.getUpdatedAt())
                 .isActive(product.getIsActive())
                 .brandId(product.getBrandId())
-                .productImages(productImages)
+                .productImages(product.getProductImages())
                 .build();
     }
 
