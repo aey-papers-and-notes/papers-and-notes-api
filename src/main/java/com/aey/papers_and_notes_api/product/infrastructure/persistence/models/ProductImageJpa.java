@@ -22,8 +22,11 @@ public class ProductImageJpa implements Serializable {
     @Column(name = "image_id", unique = true, nullable = false)
     private Integer imageId;
 
-    @Column(name = "img_tx_image_url")
-    private String imageUrl;
+    @Column(name = "img_tx_url")
+    private String url;
+
+    @Column(name = "img_tx_description")
+    private String description;
 
     @Column(name = "img_fk_product_id")
     private UUID productId;
@@ -40,14 +43,16 @@ public class ProductImageJpa implements Serializable {
     public static ProductImageJpa fromEntity(ProductImage productImage) {
         return ProductImageJpa.builder()
                 .imageId(productImage.getImageId())
-                .imageUrl(productImage.getImageUrl())
+                .url(productImage.getUrl())
+                .description(productImage.getDescription())
                 .build();
     }
 
     public ProductImage toEntity() {
         return ProductImage.builder()
                 .imageId(imageId)
-                .imageUrl(imageUrl)
+                .url(url)
+                .description(description)
                 .build();
     }
 }

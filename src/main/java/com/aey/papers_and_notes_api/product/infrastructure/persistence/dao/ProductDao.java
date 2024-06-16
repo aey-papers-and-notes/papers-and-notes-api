@@ -53,6 +53,7 @@ public class ProductDao implements ProductRepository {
         ).toList();
     }
 
+    @Override
     public Integer countAllAvailableProducts() {
         Long count = (Long) entityManager
                 .createNativeQuery(ProductQuery.COUNT_AVAILABLE_PRODUCTS)
@@ -61,7 +62,9 @@ public class ProductDao implements ProductRepository {
     }
 
     @Override
-    public Optional<ProductJpa> findOneProductById(UUID productId) {
-        return this.productJpaRepository.findById(productId);
+    public Optional<Product> findOneProductById(UUID productId) {
+        return this.productJpaRepository
+                .findById(productId)
+                .map(ProductJpa::toEntity);
     }
 }

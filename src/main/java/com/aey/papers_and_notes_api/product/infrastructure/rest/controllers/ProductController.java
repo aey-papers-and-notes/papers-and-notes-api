@@ -24,12 +24,21 @@ public class ProductController {
             @RequestParam(required = false) Integer limit,
             @RequestParam(required = false) Integer offset
     ) {
-        return ResponseEntity.ok(productService.getAllProducts(limit, offset));
+        var paginationProducts = productService.getAllProducts(limit, offset);
+        var products = paginationProducts.getItems().stream().map(ProductDto::fromEntity).toList();
+        var res = PaginationDto.<ProductDto>builder()
+                .totalItems(paginationProducts.getTotalItems())
+                .page(paginationProducts.getPage())
+                .lastPage(paginationProducts.getLastPage())
+                .items(products)
+                .build();
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable UUID productId) {
         return productService.getProductById(productId)
+                .map(ProductDto::fromEntity)
                 .map(ResponseEntity::ok)
                 .getOrElseGet(ErrorMapper::toResponse);
     }

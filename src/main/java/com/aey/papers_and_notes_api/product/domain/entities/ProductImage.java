@@ -9,5 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 public class ProductImage {
     private Integer imageId;
-    private String imageUrl;
+    private String url;
+    private String description;
 }

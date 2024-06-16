@@ -42,7 +42,8 @@ public class ProductImageDao implements ProductImageRepository {
 
         return result.stream().map(r -> ProductImage.builder()
                 .imageId((Integer) r[0])
-                .imageUrl((String) r[1])
+                .url((String) r[1])
+                .description((String) r[2])
                 .build()
         ).toList();
     }
