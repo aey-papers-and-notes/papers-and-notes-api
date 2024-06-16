@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -59,6 +60,14 @@ public class ProductJpa implements Serializable {
             updatable = false
     )
     private BrandJpa brand;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "prod06_products_tags",
+            joinColumns = @JoinColumn(name = "rpt_fk_product_id", referencedColumnName = "product_id", insertable = false, updatable = false),
+            inverseJoinColumns =  @JoinColumn(name = "rpt_fk_tag_id", referencedColumnName = "tag_id", insertable = false, updatable = false)
+    )
+    private List<TagJpa> tags;
 
     public static ProductJpa fromEntity(Product product) {
         return ProductJpa.builder()
