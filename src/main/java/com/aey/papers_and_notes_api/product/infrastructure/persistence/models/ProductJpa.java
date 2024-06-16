@@ -63,11 +63,11 @@ public class ProductJpa implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "prod06_products_tags",
-            joinColumns = @JoinColumn(name = "rpt_fk_product_id", referencedColumnName = "product_id", insertable = false, updatable = false),
-            inverseJoinColumns =  @JoinColumn(name = "rpt_fk_tag_id", referencedColumnName = "tag_id", insertable = false, updatable = false)
+            name = "prod04_products_categories",
+            joinColumns = @JoinColumn(name = "rpc_fk_product_id", referencedColumnName = "product_id", insertable = false, updatable = false),
+            inverseJoinColumns =  @JoinColumn(name = "rpc_fk_category_id", referencedColumnName = "category_id", insertable = false, updatable = false)
     )
-    private List<TagJpa> tags;
+    private List<CategoryJpa> tags;
 
     public static ProductJpa fromEntity(Product product) {
         return ProductJpa.builder()

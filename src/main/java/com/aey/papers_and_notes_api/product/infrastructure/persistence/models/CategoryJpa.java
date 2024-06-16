@@ -11,23 +11,23 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "prod05_tags")
-public class TagJpa {
+@Table(name = "prod03_categories")
+public class CategoryJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "tag_id", unique = true, nullable = false)
+    @Column(name = "category_id", unique = true, nullable = false)
     private Integer tagId;
 
-    @Column(name = "tag_tx_name")
+    @Column(name = "cat_tx_name")
     private String name;
 
-    @Column(name = "tag_st_is_active")
+    @Column(name = "cat_st_is_active")
     private Boolean isActive;
 
-    @Column(name = "tag_dt_created_at")
+    @Column(name = "cat_dt_created_at")
     private Date createdAt;
 
-    @Column(name = "tag_dt_updated_at")
+    @Column(name = "cat_dt_updated_at")
     private Date updatedAt;
 }
