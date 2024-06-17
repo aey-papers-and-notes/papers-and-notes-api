@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @Builder
 @Getter
@@ -32,11 +31,4 @@ public class BrandJpa implements Serializable {
 
     @Column(name = "brd_dt_updated_at")
     private Date updatedAt;
-
-    @OneToMany(
-            mappedBy = "brand",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
-    private List<ProductJpa> products;
 }

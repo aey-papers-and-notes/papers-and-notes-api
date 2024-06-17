@@ -31,7 +31,7 @@ public class ProductImageDao implements ProductImageRepository {
     @SuppressWarnings("unchecked")
     @Override
     public List<ProductImage> findAllProductImagesByProductId(UUID productId) {
-        List<Object[]> result = this.entityManager
+        List<Object[]> result = entityManager
                 .createNativeQuery(ProductImageQuery.PAGINATION_PRODUCT_IMAGES)
                 .setParameter(ProductImageQuery.PARAM_PRODUCT_ID, productId)
                 .getResultList();
@@ -50,9 +50,14 @@ public class ProductImageDao implements ProductImageRepository {
 
     @Override
     public Optional<ProductImage> findProductImageById(Integer productImageId) {
-        return this.productImageJpaRepository
+        return productImageJpaRepository
                 .findById(productImageId)
                 .map(ProductImageJpa::toEntity);
+    }
+
+    @Override
+    public Optional<ProductImage> saveProductImage(ProductImage productImage) {
+        return Optional.of(productImageJpaRepository.saveAndFlush(ProductImageJpa.fromEntity(productImage)).toEntity());
     }
 
 }

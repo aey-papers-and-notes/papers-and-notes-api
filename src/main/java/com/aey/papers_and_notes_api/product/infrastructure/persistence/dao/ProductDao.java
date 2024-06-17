@@ -29,7 +29,7 @@ public class ProductDao implements ProductRepository {
     @SuppressWarnings("unchecked")
     @Override
     public List<Product> findAllProducts(Integer limit, Integer offset) {
-        List<Object[]> result = this.entityManager
+        List<Object[]> result = entityManager
                 .createNativeQuery(ProductQuery.PAGINATION_PRODUCT)
                 .setParameter(ProductQuery.PARAM_PRODUCT_LIMIT, limit)
                 .setParameter(ProductQuery.PARAM_PRODUCT_OFFSET, offset)
@@ -63,8 +63,13 @@ public class ProductDao implements ProductRepository {
 
     @Override
     public Optional<Product> findOneProductById(UUID productId) {
-        return this.productJpaRepository
+        return productJpaRepository
                 .findById(productId)
                 .map(ProductJpa::toEntity);
+    }
+
+    @Override
+    public Optional<Product> createProduct(Product product) {
+        return Optional.of(productJpaRepository.saveAndFlush(ProductJpa.fromEntity(product)).toEntity());
     }
 }

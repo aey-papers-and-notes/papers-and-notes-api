@@ -3,7 +3,9 @@ package com.aey.papers_and_notes_api.product.infrastructure.rest.controllers;
 import com.aey.papers_and_notes_api.common.dtos.PaginationDto;
 import com.aey.papers_and_notes_api.common.error.ErrorMapper;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dto.CreateProductDto;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dto.ProductDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,14 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable UUID productId) {
         return productService.getProductById(productId)
+                .map(ProductDto::fromEntity)
+                .map(ResponseEntity::ok)
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductDto createProductDto) {
+        return productService.createProduct(createProductDto)
                 .map(ProductDto::fromEntity)
                 .map(ResponseEntity::ok)
                 .getOrElseGet(ErrorMapper::toResponse);

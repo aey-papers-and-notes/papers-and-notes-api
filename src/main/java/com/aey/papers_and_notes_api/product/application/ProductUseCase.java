@@ -1,6 +1,5 @@
 package com.aey.papers_and_notes_api.product.application;
 
-import com.aey.papers_and_notes_api.common.dtos.PaginationDto;
 import com.aey.papers_and_notes_api.common.entities.Pagination;
 import com.aey.papers_and_notes_api.common.error.ErrorCode;
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
@@ -8,14 +7,11 @@ import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductImageRepository;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
-import com.aey.papers_and_notes_api.product.infrastructure.persistence.models.ProductJpa;
-import com.aey.papers_and_notes_api.product.infrastructure.rest.dto.ProductDto;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dto.CreateProductDto;
 import io.vavr.control.Either;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProductUseCase implements ProductService {
@@ -66,5 +62,38 @@ public class ProductUseCase implements ProductService {
         Product productFound = product.get();
         productFound.setProductImages(productImages);
         return Either.right(productFound);
+    }
+
+    @Override
+    public Either<ErrorCode, Product> createProduct(CreateProductDto createProductDto) {
+        Product product = Product.builder()
+                .name(createProductDto.getName())
+                .description(createProductDto.getDescription())
+                .price(createProductDto.getPrice())
+                .stock(createProductDto.getStock())
+                .createdAt(new Date())
+                .updatedAt(new Date())
+                .isActive(Boolean.TRUE)
+                .brandId(createProductDto.getBrandId())
+                .build();
+        Optional<Product> newProduct = productRepository.createProduct(product);
+        if (newProduct.isEmpty()) {
+            return Either.left(ErrorCode.ERROR_TO_CREATE);
+        }
+        if (!createProductDto.getProductImages().isEmpty()) {
+            List<ProductImage> images = new ArrayList<>();
+            createProductDto.getProductImages()
+                    .forEach(imageDto -> {
+                        var image = ProductImage.builder()
+                                .url(imageDto.getUrl())
+                                .description(imageDto.getDescription())
+                                .productId(newProduct.get().getProductId())
+                                .build();
+                        var imageSaved = productImageRepository.saveProductImage(image);
+                        imageSaved.ifPresent(images::add);
+                    });
+            newProduct.get().setProductImages(images);
+        }
+        return Either.right(newProduct.get());
     }
 }
