@@ -45,6 +45,7 @@ public class ProductImageJpa implements Serializable {
                 .imageId(productImage.getImageId())
                 .url(productImage.getUrl())
                 .description(productImage.getDescription())
+//                .productId(productImage.getProductId())
                 .build();
     }
 
@@ -53,6 +54,7 @@ public class ProductImageJpa implements Serializable {
                 .imageId(imageId)
                 .url(url)
                 .description(description)
+//                .productId(productId)
                 .build();
     }
 }

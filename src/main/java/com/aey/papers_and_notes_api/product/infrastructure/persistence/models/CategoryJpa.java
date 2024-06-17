@@ -17,7 +17,7 @@ public class CategoryJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "category_id", unique = true, nullable = false)
-    private Integer tagId;
+    private Integer categoryId;
 
     @Column(name = "cat_tx_name")
     private String name;

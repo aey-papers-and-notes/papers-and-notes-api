@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface ProductImageRepository {
     List<ProductImage> findAllProductImagesByProductId(UUID productId);
     Optional<ProductImage> findProductImageById(Integer productImageId);
+    Optional<ProductImage> saveProductImage(ProductImage productImage);
 }

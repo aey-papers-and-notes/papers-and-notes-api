@@ -3,77 +3,65 @@ package com.aey.papers_and_notes_api.product.infrastructure.rest.dto;
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
+public class CreateProductDto {
 
     @JsonProperty
-    private UUID productId;
-
-    @JsonProperty
+    @NotNull(message = "Product name must be not null")
+    @NotEmpty(message = "Product name must not be empty")
+    @NotBlank(message = "Product name must not be blank")
     private String name;
 
     @JsonProperty
     private String description;
 
     @JsonProperty
+    @NotNull(message = "Stock must be not null")
+    @Positive(message = "Stock must be a positive number")
     private Integer stock;
 
     @JsonProperty
+    @NotNull(message = "Price must be not null")
+    @Positive(message = "Price must be a positive number")
     private Float price;
 
     @JsonProperty
-    private Date createdAt;
-
-    @JsonProperty
-    private Date updatedAt;
-
-    @JsonProperty
-    private Boolean isActive;
-
-    @JsonProperty
+    @NotNull(message = "Brand must be not null")
     private Integer brandId;
 
     @JsonProperty
-    private List<ProductImageDto> productImages;
+    private List<SaveProductImageDto> productImages;
 
 
-    public static ProductDto fromEntity(Product product) {
-        return ProductDto.builder()
-                .productId(product.getProductId())
+    public static CreateProductDto fromEntity(Product product) {
+        return CreateProductDto.builder()
                 .name(product.getName())
                 .description(product.getDescription())
                 .stock(product.getStock())
                 .price(product.getPrice())
-                .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
-                .isActive(product.getIsActive())
                 .brandId(product.getBrandId())
-                .productImages(product.getProductImages().stream().map(ProductImageDto::fromEntity).toList())
                 .build();
     }
 
     public Product toEntity() {
         return Product.builder()
-                .productId(productId)
                 .name(name)
                 .description(description)
                 .stock(stock)
                 .price(price)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .isActive(isActive)
                 .brandId(brandId)
                 .build();
     }
 }
-

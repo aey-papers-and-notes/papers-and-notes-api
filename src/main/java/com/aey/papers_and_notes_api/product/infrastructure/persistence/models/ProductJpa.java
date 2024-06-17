@@ -44,12 +44,7 @@ public class ProductJpa implements Serializable {
     @Column(name = "prd_st_is_active")
     private Boolean isActive;
 
-    @Column(
-            name = "prd_fk_brand_id",
-            nullable = false,
-            insertable = false,
-            updatable = false
-    )
+    @Column(name = "prd_fk_brand_id")
     private Integer brandId;
 
     @ManyToOne(fetch = FetchType.LAZY)

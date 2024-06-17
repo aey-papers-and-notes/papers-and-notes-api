@@ -10,4 +10,5 @@ public interface ProductRepository {
     List<Product> findAllProducts(Integer limit, Integer offset);
     Integer countAllAvailableProducts();
     Optional<Product> findOneProductById(UUID productId);
+    Optional<Product> createProduct(Product product);
 }
