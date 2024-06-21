@@ -5,10 +5,12 @@ import com.aey.papers_and_notes_api.common.error.ErrorCode;
 import com.aey.papers_and_notes_api.product.domain.entities.Category;
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
+import com.aey.papers_and_notes_api.product.domain.repositories.CategoryRepository;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductImageRepository;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.domain.services.CategoryService;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
+import com.aey.papers_and_notes_api.product.infrastructure.persistence.dao.CategoryDao;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.AssociateCategoryDto;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
 import io.vavr.control.Either;
@@ -23,26 +25,32 @@ public class ProductUseCase implements ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
     ProductUseCase(
             ProductRepository productRepository,
             ProductImageRepository productImageRepository,
-            CategoryService categoryService
+            CategoryService categoryService,
+            CategoryRepository categoryRepository
     ) {
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
         this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public Pagination<Product> getAllProducts(Integer limit, Integer offset) {
         limit = limit == null ? 10 : limit;
         offset = offset == null ? 0 : offset;
+
         List<Product> products = productRepository.findAllProducts(limit, offset)
                 .stream()
                 .peek(product -> {
                     List<ProductImage> productImages = productImageRepository.findAllProductImagesByProductId(product.getProductId());
                     product.setProductImages(productImages);
+                    Set<Category> categories = categoryRepository.findAllCategoriesByProductId(product.getProductId());
+                    product.setCategories(categories);
                 })
                 .toList();
         Integer totalProducts = productRepository.countAllAvailableProducts();
@@ -115,5 +123,20 @@ public class ProductUseCase implements ProductService {
             newProduct.get().setProductImages(images);
         }
         return Either.right(newProduct.get());
+    }
+
+    @Override
+    public Either<ErrorCode, Product> disableProduct(UUID productId) {
+        var product = getProductById(productId);
+        if (product.isLeft()) {
+            return Either.left(product.getLeft());
+        }
+        var productUpdate = Product.build(product.get());
+        productUpdate.setIsActive(Boolean.FALSE);
+        productUpdate.setUpdatedAt(new Date());
+        return productRepository.disableProduct(productUpdate)
+                .<Either<ErrorCode, Product>>map(Either::right)
+                .orElseGet(() -> Either.left(ErrorCode.BAD_REQUEST));
+
     }
 }

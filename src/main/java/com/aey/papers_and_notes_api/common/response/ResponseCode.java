@@ -4,7 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum ResponseCode {
-    ASSOCIATE_PRODUCT(200, "Associate product", "Product associated with a category"),;
+    ASSOCIATE_PRODUCT(200, "Associate product", "Product associated with a category"),
+    DISABLE_PRODUCT(200, "Disable product", "Product was disabled successfully"),
+    ;
 
     private final Integer statusCode;
     private final String action;
