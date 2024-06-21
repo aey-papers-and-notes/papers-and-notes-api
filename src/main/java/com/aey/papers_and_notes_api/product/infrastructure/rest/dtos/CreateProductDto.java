@@ -1,7 +1,6 @@
-package com.aey.papers_and_notes_api.product.infrastructure.rest.dto;
+package com.aey.papers_and_notes_api.product.infrastructure.rest.dtos;
 
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
-import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -43,6 +42,9 @@ public class CreateProductDto {
 
     @JsonProperty
     private List<SaveProductImageDto> productImages;
+
+    @JsonProperty
+    private List<AssociateCategoryDto> categories;
 
 
     public static CreateProductDto fromEntity(Product product) {

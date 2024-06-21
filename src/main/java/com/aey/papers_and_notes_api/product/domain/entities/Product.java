@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -23,4 +24,5 @@ public class Product {
     private Boolean isActive;
     private Integer brandId;
     private List<ProductImage> productImages;
+    private Set<Category> categories;
 }

@@ -6,8 +6,9 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Builder
 @Getter
@@ -56,13 +57,13 @@ public class ProductJpa implements Serializable {
     )
     private BrandJpa brand;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "prod04_products_categories",
-            joinColumns = @JoinColumn(name = "rpc_fk_product_id", referencedColumnName = "product_id", insertable = false, updatable = false),
-            inverseJoinColumns =  @JoinColumn(name = "rpc_fk_category_id", referencedColumnName = "category_id", insertable = false, updatable = false)
+            joinColumns = @JoinColumn(name = "rpc_fk_product_id", referencedColumnName = "product_id"),
+            inverseJoinColumns =  @JoinColumn(name = "rpc_fk_category_id", referencedColumnName = "category_id")
     )
-    private List<CategoryJpa> tags;
+    private Set<CategoryJpa> categories;
 
     public static ProductJpa fromEntity(Product product) {
         return ProductJpa.builder()
@@ -75,6 +76,7 @@ public class ProductJpa implements Serializable {
                 .updatedAt(product.getUpdatedAt())
                 .isActive(product.getIsActive())
                 .brandId(product.getBrandId())
+                .categories(product.getCategories().stream().map(CategoryJpa::fromEntity).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -89,6 +91,7 @@ public class ProductJpa implements Serializable {
                 .updatedAt(updatedAt)
                 .isActive(isActive)
                 .brandId(brandId)
+                .categories(categories.stream().map(CategoryJpa::toEntity).collect(Collectors.toSet()))
                 .build();
     }
 }

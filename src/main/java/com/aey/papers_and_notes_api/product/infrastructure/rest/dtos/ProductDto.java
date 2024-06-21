@@ -1,13 +1,14 @@
-package com.aey.papers_and_notes_api.product.infrastructure.rest.dto;
+package com.aey.papers_and_notes_api.product.infrastructure.rest.dtos;
 
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
-import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Builder
 @Getter
@@ -46,6 +47,9 @@ public class ProductDto {
     @JsonProperty
     private List<ProductImageDto> productImages;
 
+    @JsonProperty
+    private Set<CategoryDto> categories;
+
 
     public static ProductDto fromEntity(Product product) {
         return ProductDto.builder()
@@ -59,6 +63,7 @@ public class ProductDto {
                 .isActive(product.getIsActive())
                 .brandId(product.getBrandId())
                 .productImages(product.getProductImages().stream().map(ProductImageDto::fromEntity).toList())
+                .categories(product.getCategories().stream().map(CategoryDto::fromEntity).collect(Collectors.toSet()))
                 .build();
     }
 

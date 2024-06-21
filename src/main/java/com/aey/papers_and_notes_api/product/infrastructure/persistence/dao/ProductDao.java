@@ -70,6 +70,6 @@ public class ProductDao implements ProductRepository {
 
     @Override
     public Optional<Product> createProduct(Product product) {
-        return Optional.of(productJpaRepository.saveAndFlush(ProductJpa.fromEntity(product)).toEntity());
+        return Optional.of(productJpaRepository.save(ProductJpa.fromEntity(product)).toEntity());
     }
 }
