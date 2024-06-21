@@ -3,7 +3,7 @@ package com.aey.papers_and_notes_api.product.domain.services;
 import com.aey.papers_and_notes_api.common.entities.Pagination;
 import com.aey.papers_and_notes_api.common.error.ErrorCode;
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
-import com.aey.papers_and_notes_api.product.infrastructure.rest.dto.CreateProductDto;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
 import io.vavr.control.Either;
 
 import java.util.UUID;

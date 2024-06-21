@@ -2,13 +2,17 @@ package com.aey.papers_and_notes_api.product.application;
 
 import com.aey.papers_and_notes_api.common.entities.Pagination;
 import com.aey.papers_and_notes_api.common.error.ErrorCode;
+import com.aey.papers_and_notes_api.product.domain.entities.Category;
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductImageRepository;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
+import com.aey.papers_and_notes_api.product.domain.services.CategoryService;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
-import com.aey.papers_and_notes_api.product.infrastructure.rest.dto.CreateProductDto;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.AssociateCategoryDto;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
 import io.vavr.control.Either;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,13 +22,16 @@ public class ProductUseCase implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+    private final CategoryService categoryService;
 
     ProductUseCase(
             ProductRepository productRepository,
-            ProductImageRepository productImageRepository
+            ProductImageRepository productImageRepository,
+            CategoryService categoryService
     ) {
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -65,7 +72,19 @@ public class ProductUseCase implements ProductService {
     }
 
     @Override
+    @Transactional
     public Either<ErrorCode, Product> createProduct(CreateProductDto createProductDto) {
+        Set<Category> categories = new HashSet<>();
+        if (!createProductDto.getCategories().isEmpty()) {
+            for (AssociateCategoryDto categoryDto : createProductDto.getCategories()) {
+                var category = categoryService.getCategoryById(categoryDto.getCategoryId());
+                if (category.isRight()) {
+                    categories.add(category.get());
+                } else {
+                    return Either.left(category.getLeft());
+                }
+            }
+        }
         Product product = Product.builder()
                 .name(createProductDto.getName())
                 .description(createProductDto.getDescription())
@@ -75,6 +94,7 @@ public class ProductUseCase implements ProductService {
                 .updatedAt(new Date())
                 .isActive(Boolean.TRUE)
                 .brandId(createProductDto.getBrandId())
+                .categories(categories)
                 .build();
         Optional<Product> newProduct = productRepository.createProduct(product);
         if (newProduct.isEmpty()) {

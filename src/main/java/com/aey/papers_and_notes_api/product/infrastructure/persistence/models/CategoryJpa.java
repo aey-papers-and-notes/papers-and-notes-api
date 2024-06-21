@@ -1,9 +1,11 @@
 package com.aey.papers_and_notes_api.product.infrastructure.persistence.models;
 
+import com.aey.papers_and_notes_api.product.domain.entities.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -30,4 +32,27 @@ public class CategoryJpa {
 
     @Column(name = "cat_dt_updated_at")
     private Date updatedAt;
+
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+    private Set<ProductJpa> products;
+
+    public static CategoryJpa fromEntity(Category category) {
+        return CategoryJpa.builder()
+                .categoryId(category.getCategoryId())
+                .name(category.getName())
+                .isActive(category.getIsActive())
+                .createdAt(category.getCreatedAt())
+                .updatedAt(category.getUpdatedAt())
+                .build();
+    }
+
+    public Category toEntity() {
+        return Category.builder()
+                .categoryId(categoryId)
+                .name(name)
+                .isActive(isActive)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
+    }
 }
