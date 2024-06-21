@@ -2,6 +2,8 @@ package com.aey.papers_and_notes_api.product.infrastructure.rest.controllers;
 
 import com.aey.papers_and_notes_api.common.dtos.PaginationDto;
 import com.aey.papers_and_notes_api.common.error.ErrorMapper;
+import com.aey.papers_and_notes_api.common.response.ResponseCode;
+import com.aey.papers_and_notes_api.common.response.ResponseCodeDto;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.ProductDto;
@@ -50,6 +52,14 @@ public class ProductController {
         return productService.createProduct(createProductDto)
                 .map(ProductDto::fromEntity)
                 .map(ResponseEntity::ok)
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
+
+    @PatchMapping("/disable/{productId}")
+    public ResponseEntity<ResponseCodeDto<ProductDto>> disableProduct(@PathVariable UUID productId) {
+        return productService.disableProduct(productId)
+                .map(ProductDto::fromEntity)
+                .map(p -> ResponseEntity.ok(ResponseCodeDto.ok(ResponseCode.DISABLE_PRODUCT, p)))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 }

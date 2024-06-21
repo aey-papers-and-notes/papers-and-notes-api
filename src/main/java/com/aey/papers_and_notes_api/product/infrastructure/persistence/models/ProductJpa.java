@@ -76,7 +76,6 @@ public class ProductJpa implements Serializable {
                 .updatedAt(product.getUpdatedAt())
                 .isActive(product.getIsActive())
                 .brandId(product.getBrandId())
-                .categories(product.getCategories().stream().map(CategoryJpa::fromEntity).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -91,7 +90,6 @@ public class ProductJpa implements Serializable {
                 .updatedAt(updatedAt)
                 .isActive(isActive)
                 .brandId(brandId)
-                .categories(categories.stream().map(CategoryJpa::toEntity).collect(Collectors.toSet()))
                 .build();
     }
 }
