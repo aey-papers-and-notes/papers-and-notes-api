@@ -7,6 +7,8 @@ import com.aey.papers_and_notes_api.product.domain.services.CategoryService;
 import io.vavr.control.Either;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CategoryUseCase implements CategoryService {
 
@@ -18,8 +20,15 @@ public class CategoryUseCase implements CategoryService {
 
     @Override
     public Either<ErrorCode, Category> getCategoryById(Integer categoryId) {
-        return categoryRepository.findById(categoryId)
-                .<Either<ErrorCode, Category>>map(Either::right)
-                .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
+        Optional<Category> category = categoryRepository.findById(categoryId);
+
+        if (category.isEmpty()) {
+            return Either.left(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+        if (category.get().getIsActive().equals(Boolean.FALSE)) {
+            return Either.left(ErrorCode.CATEGORY_NOT_AVAILABLE);
+        }
+
+        return Either.right(category.get());
     }
 }

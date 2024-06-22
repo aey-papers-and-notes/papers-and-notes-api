@@ -68,10 +68,10 @@ public class ProductUseCase implements ProductService {
         List<ProductImage> productImages = productImageRepository.findAllProductImagesByProductId(productId);
 
         if (product.isEmpty()) {
-            return Either.left(ErrorCode.NOT_FOUND);
+            return Either.left(ErrorCode.PRODUCT_NOT_FOUND);
         }
         if (product.get().getIsActive().equals(Boolean.FALSE)) {
-            return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+            return Either.left(ErrorCode.PRODUCT_NOT_AVAILABLE);
         }
 
         Product productFound = product.get();
