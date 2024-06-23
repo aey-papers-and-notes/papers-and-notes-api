@@ -37,7 +37,6 @@ public class CreateProductDto {
     private Float price;
 
     @JsonProperty
-    @NotNull(message = "Brand must be not null")
     private Integer brandId;
 
     @JsonProperty
