@@ -9,10 +9,12 @@ import com.aey.papers_and_notes_api.product.domain.repositories.CategoryReposito
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductImageRepository;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.domain.services.CategoryService;
+import com.aey.papers_and_notes_api.product.domain.services.ProductImageService;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.dao.CategoryDao;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.AssociateCategoryDto;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.SaveProductImageDto;
 import io.vavr.control.Either;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -23,20 +25,17 @@ import java.util.*;
 public class ProductUseCase implements ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductImageRepository productImageRepository;
+    private final ProductImageService productImageService;
     private final CategoryService categoryService;
-    private final CategoryRepository categoryRepository;
 
     ProductUseCase(
             ProductRepository productRepository,
-            ProductImageRepository productImageRepository,
-            CategoryService categoryService,
-            CategoryRepository categoryRepository
+            ProductImageService productImageService,
+            CategoryService categoryService
     ) {
         this.productRepository = productRepository;
-        this.productImageRepository = productImageRepository;
+        this.productImageService = productImageService;
         this.categoryService = categoryService;
-        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -47,9 +46,9 @@ public class ProductUseCase implements ProductService {
         List<Product> products = productRepository.findAllProducts(limit, offset)
                 .stream()
                 .peek(product -> {
-                    List<ProductImage> productImages = productImageRepository.findAllProductImagesByProductId(product.getProductId());
+                    List<ProductImage> productImages = productImageService.getAllProductImagesByProductId(product.getProductId());
                     product.setProductImages(productImages);
-                    Set<Category> categories = categoryRepository.findAllCategoriesByProductId(product.getProductId());
+                    Set<Category> categories = categoryService.getAllCategoriesByProductId(product.getProductId());
                     product.setCategories(categories);
                 })
                 .toList();
@@ -65,7 +64,8 @@ public class ProductUseCase implements ProductService {
     @Override
     public Either<ErrorCode, Product> getProductById(UUID productId) {
         Optional<Product> product = productRepository.findOneProductById(productId);
-        List<ProductImage> productImages = productImageRepository.findAllProductImagesByProductId(productId);
+        List<ProductImage> productImages = productImageService.getAllProductImagesByProductId(productId);
+        Set<Category> categories = categoryService.getAllCategoriesByProductId(productId);
 
         if (product.isEmpty()) {
             return Either.left(ErrorCode.PRODUCT_NOT_FOUND);
@@ -76,6 +76,7 @@ public class ProductUseCase implements ProductService {
 
         Product productFound = product.get();
         productFound.setProductImages(productImages);
+        productFound.setCategories(categories);
         return Either.right(productFound);
     }
 
@@ -83,6 +84,7 @@ public class ProductUseCase implements ProductService {
     @Transactional
     public Either<ErrorCode, Product> createProduct(CreateProductDto createProductDto) {
         Set<Category> categories = new HashSet<>();
+        List<ProductImage> images = new ArrayList<>();
         if (!createProductDto.getCategories().isEmpty()) {
             for (AssociateCategoryDto categoryDto : createProductDto.getCategories()) {
                 var category = categoryService.getCategoryById(categoryDto.getCategoryId());
@@ -102,6 +104,7 @@ public class ProductUseCase implements ProductService {
                 .updatedAt(new Date())
                 .isActive(Boolean.TRUE)
                 .brandId(createProductDto.getBrandId())
+                .productImages(images)
                 .categories(categories)
                 .build();
         Optional<Product> newProduct = productRepository.createProduct(product);
@@ -109,18 +112,20 @@ public class ProductUseCase implements ProductService {
             return Either.left(ErrorCode.ERROR_TO_CREATE);
         }
         if (!createProductDto.getProductImages().isEmpty()) {
-            List<ProductImage> images = new ArrayList<>();
-            createProductDto.getProductImages()
-                    .forEach(imageDto -> {
-                        var image = ProductImage.builder()
-                                .url(imageDto.getUrl())
-                                .description(imageDto.getDescription())
-                                .productId(newProduct.get().getProductId())
-                                .build();
-                        var imageSaved = productImageRepository.saveProductImage(image);
-                        imageSaved.ifPresent(images::add);
-                    });
+            for (SaveProductImageDto imageDto: createProductDto.getProductImages()) {
+                var image = ProductImage.builder()
+                        .url(imageDto.getUrl())
+                        .description(imageDto.getDescription())
+                        .productId(newProduct.get().getProductId())
+                        .build();
+                var imageSaved = productImageService.saveProductImage(image);
+                if (imageSaved.isLeft()) {
+                    return Either.left(imageSaved.getLeft());
+                }
+                images.add(image);
+            }
             newProduct.get().setProductImages(images);
+            newProduct.get().setCategories(categories);
         }
         return Either.right(newProduct.get());
     }

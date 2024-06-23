@@ -12,6 +12,7 @@ public class CategoryQuery {
             "from prod03_categories pc  " +
             "inner join prod04_products_categories ppc  " +
             "on pc.category_id = ppc.rpc_fk_category_id " +
-            "where ppc.rpc_fk_product_id = (:productId)";
+            "where ppc.rpc_fk_product_id = (:productId) " +
+            "and pc.cat_st_is_active = true";
 
 }
