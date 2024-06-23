@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ProductImageService {
-    Either<ErrorCode, List<ProductImage>> getAllProductImagesByProductId(UUID productId);
+    List<ProductImage> getAllProductImagesByProductId(UUID productId);
+    Either<ErrorCode, ProductImage> saveProductImage(ProductImage productImage);
     Either<ErrorCode, ProductImage> uploadProductImageURL(UUID productId, String url);
     Either<ErrorCode, ProductImage> updateProductImageURL(UUID productId, String url);
     Either<ErrorCode, ProductImage> deleteProductImageURL(Integer id, UUID productId);

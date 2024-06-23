@@ -8,6 +8,8 @@ import io.vavr.control.Either;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class CategoryUseCase implements CategoryService {
@@ -30,5 +32,10 @@ public class CategoryUseCase implements CategoryService {
         }
 
         return Either.right(category.get());
+    }
+
+    @Override
+    public Set<Category> getAllCategoriesByProductId(UUID productId) {
+        return categoryRepository.findAllCategoriesByProductId(productId);
     }
 }
