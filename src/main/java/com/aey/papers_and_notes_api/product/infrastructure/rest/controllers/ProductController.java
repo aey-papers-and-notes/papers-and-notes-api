@@ -62,4 +62,12 @@ public class ProductController {
                 .map(p -> ResponseEntity.ok(ResponseCodeDto.ok(ResponseCode.DISABLE_PRODUCT, p)))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
+
+    @PatchMapping("/enable/{productId}")
+    public ResponseEntity<ResponseCodeDto<ProductDto>> enableProduct(@PathVariable UUID productId) {
+        return productService.enableProduct(productId)
+                .map(ProductDto::fromEntity)
+                .map(p -> ResponseEntity.ok(ResponseCodeDto.ok(ResponseCode.ENABLE_PRODUCT, p)))
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
 }
