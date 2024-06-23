@@ -64,8 +64,6 @@ public class ProductUseCase implements ProductService {
     @Override
     public Either<ErrorCode, Product> getProductById(UUID productId) {
         Optional<Product> product = productRepository.findOneProductById(productId);
-        List<ProductImage> productImages = productImageService.getAllProductImagesByProductId(productId);
-        Set<Category> categories = categoryService.getAllCategoriesByProductId(productId);
 
         if (product.isEmpty()) {
             return Either.left(ErrorCode.PRODUCT_NOT_FOUND);
@@ -74,9 +72,7 @@ public class ProductUseCase implements ProductService {
             return Either.left(ErrorCode.PRODUCT_NOT_AVAILABLE);
         }
 
-        Product productFound = product.get();
-        productFound.setProductImages(productImages);
-        productFound.setCategories(categories);
+        Product productFound = fillProduct(productId, product.get());
         return Either.right(productFound);
     }
 
@@ -136,12 +132,33 @@ public class ProductUseCase implements ProductService {
         if (product.isLeft()) {
             return Either.left(product.getLeft());
         }
-        var productUpdate = Product.build(product.get());
+        Product productUpdate = product.get();
         productUpdate.setIsActive(Boolean.FALSE);
         productUpdate.setUpdatedAt(new Date());
-        return productRepository.disableProduct(productUpdate)
-                .<Either<ErrorCode, Product>>map(Either::right)
-                .orElseGet(() -> Either.left(ErrorCode.BAD_REQUEST));
+        return productRepository.updateProductState(productUpdate)
+                .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
+                .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
+    }
 
+    @Override
+    public Either<ErrorCode, Product> enableProduct(UUID productId) {
+        Optional<Product> product = productRepository.findOneProductById(productId);
+        if (product.isEmpty()) {
+            return Either.left(ErrorCode.PRODUCT_NOT_FOUND);
+        }
+        Product productUpdate = product.get();
+        productUpdate.setIsActive(Boolean.TRUE);
+        productUpdate.setUpdatedAt(new Date());
+        return productRepository.updateProductState(productUpdate)
+                .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
+                .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
+    }
+
+    private Product fillProduct(UUID productId, Product product) {
+        List<ProductImage> productImages = productImageService.getAllProductImagesByProductId(productId);
+        Set<Category> categories = categoryService.getAllCategoriesByProductId(productId);
+        product.setProductImages(productImages);
+        product.setCategories(categories);
+        return product;
     }
 }

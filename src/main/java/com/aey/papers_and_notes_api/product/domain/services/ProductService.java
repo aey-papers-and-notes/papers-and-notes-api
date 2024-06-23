@@ -13,4 +13,5 @@ public interface ProductService {
     Either<ErrorCode, Product> getProductById(UUID productId);
     Either<ErrorCode, Product> createProduct(CreateProductDto createProductDto);
     Either<ErrorCode, Product> disableProduct(UUID productId);
+    Either<ErrorCode, Product> enableProduct(UUID productId);
 }

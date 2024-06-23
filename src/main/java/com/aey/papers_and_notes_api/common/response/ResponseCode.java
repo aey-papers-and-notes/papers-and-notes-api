@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ResponseCode {
     ASSOCIATE_PRODUCT(200, "Associate product", "Product associated with a category"),
     DISABLE_PRODUCT(200, "Disable product", "Product was disabled successfully"),
+    ENABLE_PRODUCT(200, "Enable product", "Product was enable successfully"),
     ;
 
     private final Integer statusCode;
