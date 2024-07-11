@@ -1,11 +1,9 @@
 package com.aey.papers_and_notes_api.product.infrastructure.persistence.dao;
 
 import com.aey.papers_and_notes_api.product.domain.entities.Category;
-import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import com.aey.papers_and_notes_api.product.domain.repositories.CategoryRepository;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.models.CategoryJpa;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.queries.CategoryQuery;
-import com.aey.papers_and_notes_api.product.infrastructure.persistence.queries.ProductQuery;
 import com.aey.papers_and_notes_api.product.infrastructure.persistence.repositories.CategoryJpaRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -15,12 +13,21 @@ import java.util.stream.Collectors;
 
 @Repository
 public class CategoryDao implements CategoryRepository {
-    private EntityManager entityManager;
+
+    private final EntityManager entityManager;
     private final CategoryJpaRepository categoryJpaRepository;
 
     public CategoryDao(CategoryJpaRepository categoryJpaRepository, EntityManager entityManager) {
         this.categoryJpaRepository = categoryJpaRepository;
         this.entityManager = entityManager;
+    }
+
+    @Override
+    public Set<Category> findAll() {
+        return categoryJpaRepository.findAll()
+                .stream()
+                .map(CategoryJpa::toEntity)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -49,5 +56,10 @@ public class CategoryDao implements CategoryRepository {
                 .updatedAt((Date) r[4])
                 .build()
         ).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Optional<Category> saveCategoryById(Integer categoryId, Category category) {
+        return Optional.empty();
     }
 }
