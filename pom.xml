@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.aey</groupId>
 	<artifactId>papers-and-notes-api</artifactId>
-	<version>0.0.19</version>
+	<version>0.0.20</version>
 	<packaging>war</packaging>
 	<name>papers-and-notes-api</name>
 	<description>Backend application for manage products</description>
@@ -70,7 +70,11 @@
 			<artifactId>vavr</artifactId>
 			<version>0.10.4</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
