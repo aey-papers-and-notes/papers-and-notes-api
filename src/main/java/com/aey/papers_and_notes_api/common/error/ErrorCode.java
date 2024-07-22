@@ -20,9 +20,11 @@ public enum ErrorCode {
     //Products
     PRODUCT_NOT_FOUND(404, "Not Found", "Product not found"),
     PRODUCT_NOT_AVAILABLE(404, "Not Found", "Product not available"),
+
     //Categories
     CATEGORY_NOT_FOUND(404, "Not Found", "Category not found"),
     CATEGORY_NOT_AVAILABLE(404, "Not Found", "Category not available"),
+    CATEGORY_ERROR(500, "Internal Server Error", "Oops... Something went wrong. An unexpected error occurred while processing the request. Please try again later or contact support."),
     ;
 
     private final Integer statusCode;

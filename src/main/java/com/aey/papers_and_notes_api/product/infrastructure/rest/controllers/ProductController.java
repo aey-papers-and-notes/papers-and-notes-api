@@ -4,6 +4,7 @@ import com.aey.papers_and_notes_api.common.dtos.PaginationDto;
 import com.aey.papers_and_notes_api.common.error.ErrorMapper;
 import com.aey.papers_and_notes_api.common.response.ResponseCode;
 import com.aey.papers_and_notes_api.common.response.ResponseCodeDto;
+import com.aey.papers_and_notes_api.common.response.ResponseCodeMapper;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.ProductDto;
@@ -30,13 +31,7 @@ public class ProductController {
     ) {
         var paginationProducts = productService.getAllProducts(limit, offset);
         var products = paginationProducts.getItems().stream().map(ProductDto::fromEntity).toList();
-        var res = PaginationDto.<ProductDto>builder()
-                .totalItems(paginationProducts.getTotalItems())
-                .page(paginationProducts.getPage())
-                .lastPage(paginationProducts.getLastPage())
-                .items(products)
-                .build();
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(PaginationDto.fromEntity(paginationProducts, products));
     }
 
     @GetMapping("/{productId}")
@@ -48,7 +43,9 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductDto createProductDto) {
+    public ResponseEntity<ProductDto> createProduct(
+            @Valid @RequestBody CreateProductDto createProductDto
+    ) {
         return productService.createProduct(createProductDto)
                 .map(ProductDto::fromEntity)
                 .map(ResponseEntity::ok)
@@ -59,7 +56,7 @@ public class ProductController {
     public ResponseEntity<ResponseCodeDto<ProductDto>> disableProduct(@PathVariable UUID productId) {
         return productService.disableProduct(productId)
                 .map(ProductDto::fromEntity)
-                .map(p -> ResponseEntity.ok(ResponseCodeDto.ok(ResponseCode.DISABLE_PRODUCT, p)))
+                .map(p -> ResponseCodeMapper.toResponse(ResponseCode.DISABLE_PRODUCT, p))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
@@ -67,7 +64,7 @@ public class ProductController {
     public ResponseEntity<ResponseCodeDto<ProductDto>> enableProduct(@PathVariable UUID productId) {
         return productService.enableProduct(productId)
                 .map(ProductDto::fromEntity)
-                .map(p -> ResponseEntity.ok(ResponseCodeDto.ok(ResponseCode.ENABLE_PRODUCT, p)))
+                .map(p -> ResponseCodeMapper.toResponse(ResponseCode.ENABLE_PRODUCT, p))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 }

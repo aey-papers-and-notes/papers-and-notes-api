@@ -15,6 +15,7 @@ import java.util.UUID;
 public class Category {
     private Integer categoryId;
     private String name;
+    private String description;
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;

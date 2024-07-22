@@ -12,13 +12,4 @@ public class ResponseCodeDto<T> {
     private String action;
     private String message;
     private T data;
-
-    public static <T> ResponseCodeDto<T> ok(ResponseCode responseCode, T data) {
-        return ResponseCodeDto.<T>builder()
-                .statusCode(responseCode.getStatusCode())
-                .action(responseCode.getAction())
-                .message(responseCode.getMessage())
-                .data(data)
-                .build();
-    }
 }

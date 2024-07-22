@@ -7,8 +7,11 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface CategoryRepository {
-    Set<Category> findAll();
+    Set<Category> findAllCategories(Integer limit, Integer offset);
+    Integer countAllAvailableCategories();
     Optional<Category> findById(Integer categoryId);
     Set<Category> findAllCategoriesByProductId(UUID productId);
-    Optional<Category> saveCategoryById(Integer categoryId, Category category);
+    Optional<Category> createCategory(Category category);
+    Optional<Category> saveCategoryById(Category category);
+    Optional<Category> updateCategoryState(Category category);
 }
