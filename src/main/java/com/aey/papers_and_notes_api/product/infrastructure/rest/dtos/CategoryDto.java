@@ -22,6 +22,9 @@ public class CategoryDto {
     private String name;
 
     @JsonProperty
+    private String description;
+
+    @JsonProperty
     private Boolean isActive;
 
     @JsonProperty
@@ -34,6 +37,7 @@ public class CategoryDto {
         return CategoryDto.builder()
                 .categoryId(category.getCategoryId())
                 .name(category.getName())
+                .description(category.getDescription())
                 .isActive(category.getIsActive())
                 .createdAt(category.getCreatedAt())
                 .updatedAt(category.getUpdatedAt())

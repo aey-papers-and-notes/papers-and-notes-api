@@ -24,6 +24,9 @@ public class CategoryJpa {
     @Column(name = "cat_tx_name")
     private String name;
 
+    @Column(name = "cat_tx_description")
+    private String description;
+
     @Column(name = "cat_st_is_active")
     private Boolean isActive;
 
@@ -40,6 +43,7 @@ public class CategoryJpa {
         return CategoryJpa.builder()
                 .categoryId(category.getCategoryId())
                 .name(category.getName())
+                .description(category.getDescription())
                 .isActive(category.getIsActive())
                 .createdAt(category.getCreatedAt())
                 .updatedAt(category.getUpdatedAt())
@@ -50,6 +54,7 @@ public class CategoryJpa {
         return Category.builder()
                 .categoryId(categoryId)
                 .name(name)
+                .description(description)
                 .isActive(isActive)
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
