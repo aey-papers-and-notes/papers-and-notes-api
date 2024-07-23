@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveProductImageDto {
+public class UploadProductImageDto {
 
     @JsonProperty
     @NotNull(message = "Image url must be not null")

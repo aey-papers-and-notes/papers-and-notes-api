@@ -4,7 +4,9 @@ import com.aey.papers_and_notes_api.common.error.ErrorCode;
 import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductImageRepository;
 import com.aey.papers_and_notes_api.product.domain.services.ProductImageService;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.UploadProductImageDto;
 import io.vavr.control.Either;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +27,7 @@ public class ProductImageUseCase implements ProductImageService {
     }
 
     @Override
+    @Transactional
     public Either<ErrorCode, ProductImage> saveProductImage(ProductImage productImage) {
         return productImageRepository.saveProductImage(productImage)
                 .<Either<ErrorCode, ProductImage>>map(Either::right)
@@ -32,13 +35,16 @@ public class ProductImageUseCase implements ProductImageService {
     }
 
     @Override
-    public Either<ErrorCode, ProductImage> uploadProductImageURL(UUID productId, String url) {
-        return null;
-    }
-
-    @Override
-    public Either<ErrorCode, ProductImage> updateProductImageURL(UUID productId, String url) {
-        return null;
+    @Transactional
+    public Either<ErrorCode, ProductImage> uploadProductImage(UUID productId, UploadProductImageDto uploadProductImageDto) {
+        ProductImage productImage = ProductImage.builder()
+                .url(uploadProductImageDto.getUrl())
+                .description(uploadProductImageDto.getDescription())
+                .productId(productId)
+                .build();
+        return productImageRepository.saveProductImage(productImage)
+                .<Either<ErrorCode, ProductImage>>map(Either::right)
+                .orElseGet(() -> Either.left(ErrorCode.ERROR_TO_CREATE));
     }
 
     @Override

@@ -9,10 +9,11 @@ public enum ResponseCode {
     ASSOCIATE_PRODUCT(200, "Associate product", "Product associated with a category"),
     DISABLE_PRODUCT(200, "Disable product", "Product was disabled successfully"),
     ENABLE_PRODUCT(200, "Enable product", "Product was enable successfully"),
+    PRODUCT_CREATED(201, "Create product", "Product was successfully created"),
 
     //Categories
     CATEGORY_UPDATED(200, "Update category", "Category was successfully updated"),
-    CATEGORY_DISABLE(200, "Disable category", "Category was disabled successfully"),
+    DISABLE_CATEGORY(200, "Disable category", "Category was disabled successfully"),
     CATEGORY_CREATED(201, "Create category", "Category was successfully created"),
     ;
 

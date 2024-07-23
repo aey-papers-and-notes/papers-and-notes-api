@@ -40,7 +40,7 @@ public class CreateProductDto {
     private Integer brandId;
 
     @JsonProperty
-    private List<SaveProductImageDto> productImages;
+    private List<UploadProductImageDto> productImages;
 
     @JsonProperty
     private List<AssociateCategoryDto> categories;

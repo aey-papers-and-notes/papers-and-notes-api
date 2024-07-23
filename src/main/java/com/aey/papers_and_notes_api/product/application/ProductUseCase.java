@@ -5,16 +5,11 @@ import com.aey.papers_and_notes_api.common.error.ErrorCode;
 import com.aey.papers_and_notes_api.product.domain.entities.Category;
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
-import com.aey.papers_and_notes_api.product.domain.repositories.CategoryRepository;
-import com.aey.papers_and_notes_api.product.domain.repositories.ProductImageRepository;
 import com.aey.papers_and_notes_api.product.domain.repositories.ProductRepository;
 import com.aey.papers_and_notes_api.product.domain.services.CategoryService;
 import com.aey.papers_and_notes_api.product.domain.services.ProductImageService;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
-import com.aey.papers_and_notes_api.product.infrastructure.persistence.dao.CategoryDao;
-import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.AssociateCategoryDto;
-import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
-import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.SaveProductImageDto;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.*;
 import io.vavr.control.Either;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -108,7 +103,7 @@ public class ProductUseCase implements ProductService {
             return Either.left(ErrorCode.ERROR_TO_CREATE);
         }
         if (!createProductDto.getProductImages().isEmpty()) {
-            for (SaveProductImageDto imageDto: createProductDto.getProductImages()) {
+            for (UploadProductImageDto imageDto: createProductDto.getProductImages()) {
                 var image = ProductImage.builder()
                         .url(imageDto.getUrl())
                         .description(imageDto.getDescription())
@@ -127,8 +122,33 @@ public class ProductUseCase implements ProductService {
     }
 
     @Override
+    @Transactional
+    public Either<ErrorCode, Product> updateProduct(UUID productId, UpdateProductDto updateProductDto) {
+        var productFound = getProductById(productId);
+        if (productFound.isLeft()) {
+            return Either.left(productFound.getLeft());
+        }
+        Product productTo = Product.builder()
+                .productId(productFound.get().getProductId())
+                .name(updateProductDto.getName() != null ? updateProductDto.getName() : productFound.get().getName())
+                .description(updateProductDto.getDescription() != null ? updateProductDto.getDescription() : productFound.get().getDescription())
+                .price(updateProductDto.getPrice() != null ? updateProductDto.getPrice() : productFound.get().getPrice())
+                .stock(updateProductDto.getStock() != null ? updateProductDto.getStock() : productFound.get().getStock())
+                .brandId(updateProductDto.getBrandId() != null ? updateProductDto.getBrandId() : productFound.get().getBrandId())
+                .createdAt(productFound.get().getCreatedAt())
+                .updatedAt(new Date())
+                .isActive(productFound.get().getIsActive())
+                .categories(categoryService.getAllCategoriesByProductId(productId))
+                .build();
+        return productRepository.updateProduct(productTo)
+                .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
+                .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
+    }
+
+    @Override
+    @Transactional
     public Either<ErrorCode, Product> disableProduct(UUID productId) {
-        var product = getProductById(productId);
+        Either<ErrorCode, Product> product = getProductById(productId);
         if (product.isLeft()) {
             return Either.left(product.getLeft());
         }
@@ -141,6 +161,7 @@ public class ProductUseCase implements ProductService {
     }
 
     @Override
+    @Transactional
     public Either<ErrorCode, Product> enableProduct(UUID productId) {
         Optional<Product> product = productRepository.findOneProductById(productId);
         if (product.isEmpty()) {
@@ -152,6 +173,15 @@ public class ProductUseCase implements ProductService {
         return productRepository.updateProductState(productUpdate)
                 .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
                 .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
+    }
+
+    @Override
+    public Either<ErrorCode, ProductImage> uploadProductImage(UUID productId, UploadProductImageDto uploadProductImageDto) {
+        Either<ErrorCode, Product> product = getProductById(productId);
+        if (product.isLeft()) {
+            return Either.left(product.getLeft());
+        }
+        return productImageService.uploadProductImage(product.get().getProductId(), uploadProductImageDto);
     }
 
     private Product fillProduct(UUID productId, Product product) {
