@@ -8,6 +8,7 @@ import com.aey.papers_and_notes_api.product.domain.services.CategoryService;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateCategoryDto;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.UpdateCategoryDto;
 import io.vavr.control.Either;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -53,6 +54,7 @@ public class CategoryUseCase implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Either<ErrorCode, Category> createCategory(CreateCategoryDto createCategoryDto) {
         var category = Category.builder()
                 .name(createCategoryDto.getName())
@@ -67,6 +69,7 @@ public class CategoryUseCase implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Either<ErrorCode, Category> updateCategory(Integer categoryId, UpdateCategoryDto category) {
         var categoryFound = getCategoryById(categoryId);
         if (categoryFound.isLeft()) {
@@ -87,6 +90,7 @@ public class CategoryUseCase implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Either<ErrorCode, Category> disableCategory(Integer categoryId) {
         var category = getCategoryById(categoryId);
         if (category.isLeft()) {
@@ -101,6 +105,7 @@ public class CategoryUseCase implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Either<ErrorCode, Category> enableCategory(Integer categoryId) {
         var category = categoryRepository.findById(categoryId);
         if (category.isEmpty()) {

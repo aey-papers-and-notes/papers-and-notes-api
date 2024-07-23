@@ -31,19 +31,7 @@ public class CategoryDao implements CategoryRepository {
                 .setParameter(CategoryQuery.PARAM_CATEGORY_OFFSET, offset)
                 .getResultList();
 
-        if (result.isEmpty()) {
-            return new HashSet<>();
-        }
-
-        return result.stream().map(r -> Category.builder()
-                .categoryId((Integer) r[0])
-                .name((String) r[1])
-                .description((String) r[2])
-                .isActive((Boolean) r[3])
-                .createdAt((Date) r[4])
-                .updatedAt((Date) r[5])
-                .build()
-        ).collect(Collectors.toSet());
+        return getCategories(result);
     }
 
     @Override
@@ -68,18 +56,7 @@ public class CategoryDao implements CategoryRepository {
                 .setParameter(CategoryQuery.PARAM_PRODUCT_ID, productId)
                 .getResultList();
 
-        if (result.isEmpty()) {
-            return new HashSet<>();
-        }
-
-        return result.stream().map(r -> Category.builder()
-                .categoryId((Integer) r[0])
-                .name((String) r[1])
-                .isActive((Boolean) r[2])
-                .createdAt((Date) r[3])
-                .updatedAt((Date) r[4])
-                .build()
-        ).collect(Collectors.toSet());
+        return getCategories(result);
     }
 
     @Override
@@ -107,5 +84,20 @@ public class CategoryDao implements CategoryRepository {
                         .saveAndFlush(CategoryJpa.fromEntity(category))
                         .toEntity()
         );
+    }
+
+    private Set<Category> getCategories(List<Object[]> result) {
+        if (result.isEmpty()) {
+            return new HashSet<>();
+        }
+        return result.stream().map(r -> Category.builder()
+                .categoryId((Integer) r[0])
+                .name((String) r[1])
+                .description((String) r[2])
+                .isActive((Boolean) r[3])
+                .createdAt((Date) r[4])
+                .updatedAt((Date) r[5])
+                .build()
+        ).collect(Collectors.toSet());
     }
 }

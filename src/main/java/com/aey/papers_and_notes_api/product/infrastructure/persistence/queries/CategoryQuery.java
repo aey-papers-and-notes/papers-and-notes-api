@@ -9,6 +9,7 @@ public class CategoryQuery {
     public static final String CATEGORIES_BY_PRODUCT_ID = "select " +
             "category_id as categoryId, " +
             "cat_tx_name as name, " +
+            "cat_tx_description as description, " +
             "cat_st_is_active as isActive, " +
             "cat_dt_created_at as createdAt, " +
             "cat_dt_updated_at as updatedAt " +

@@ -6,8 +6,7 @@ import com.aey.papers_and_notes_api.common.response.ResponseCode;
 import com.aey.papers_and_notes_api.common.response.ResponseCodeDto;
 import com.aey.papers_and_notes_api.common.response.ResponseCodeMapper;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
-import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
-import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.ProductDto;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +51,17 @@ public class ProductController {
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
+    @PatchMapping("/{productId}")
+    public ResponseEntity<ResponseCodeDto<ProductDto>> updateProduct(
+            @PathVariable UUID productId,
+            @Valid @RequestBody UpdateProductDto updateProductDto
+    ) {
+        return productService.updateProduct(productId, updateProductDto)
+                .map(ProductDto::fromEntity)
+                .map(p -> ResponseCodeMapper.toResponse(ResponseCode.PRODUCT_CREATED, p))
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
+
     @PatchMapping("/disable/{productId}")
     public ResponseEntity<ResponseCodeDto<ProductDto>> disableProduct(@PathVariable UUID productId) {
         return productService.disableProduct(productId)
@@ -64,6 +74,17 @@ public class ProductController {
     public ResponseEntity<ResponseCodeDto<ProductDto>> enableProduct(@PathVariable UUID productId) {
         return productService.enableProduct(productId)
                 .map(ProductDto::fromEntity)
+                .map(p -> ResponseCodeMapper.toResponse(ResponseCode.ENABLE_PRODUCT, p))
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
+
+    @PostMapping("/{productId}/images")
+    public ResponseEntity<ResponseCodeDto<ProductImageDto>> uploadProductImage(
+            @PathVariable UUID productId,
+            @Valid @RequestBody UploadProductImageDto uploadProductImageDto
+    ) {
+        return productService.uploadProductImage(productId, uploadProductImageDto)
+                .map(ProductImageDto::fromEntity)
                 .map(p -> ResponseCodeMapper.toResponse(ResponseCode.ENABLE_PRODUCT, p))
                 .getOrElseGet(ErrorMapper::toResponse);
     }

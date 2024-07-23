@@ -77,7 +77,7 @@ public class CategoryController {
     public ResponseEntity<ResponseCodeDto<CategoryDto>> disableCategory(@PathVariable Integer categoryId) {
         return categoryService.disableCategory(categoryId)
                 .map(CategoryDto::fromEntity)
-                .map((c) -> ResponseCodeMapper.toResponse(ResponseCode.CATEGORY_DISABLE, c))
+                .map((c) -> ResponseCodeMapper.toResponse(ResponseCode.DISABLE_CATEGORY, c))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
@@ -85,7 +85,7 @@ public class CategoryController {
     public ResponseEntity<ResponseCodeDto<CategoryDto>> enableCategory(@PathVariable Integer categoryId) {
         return categoryService.enableCategory(categoryId)
                 .map(CategoryDto::fromEntity)
-                .map((c) -> ResponseCodeMapper.toResponse(ResponseCode.CATEGORY_DISABLE, c))
+                .map((c) -> ResponseCodeMapper.toResponse(ResponseCode.DISABLE_CATEGORY, c))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 }
