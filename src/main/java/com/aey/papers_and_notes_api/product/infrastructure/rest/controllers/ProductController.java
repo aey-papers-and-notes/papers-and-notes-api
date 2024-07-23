@@ -7,11 +7,14 @@ import com.aey.papers_and_notes_api.common.response.ResponseCodeDto;
 import com.aey.papers_and_notes_api.common.response.ResponseCodeMapper;
 import com.aey.papers_and_notes_api.product.domain.services.ProductService;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.*;
+import io.vavr.control.Either;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController()
 @RequestMapping("/products")
@@ -58,7 +61,7 @@ public class ProductController {
     ) {
         return productService.updateProduct(productId, updateProductDto)
                 .map(ProductDto::fromEntity)
-                .map(p -> ResponseCodeMapper.toResponse(ResponseCode.PRODUCT_CREATED, p))
+                .map(p -> ResponseCodeMapper.toResponse(ResponseCode.CREATE_PRODUCT, p))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
@@ -85,7 +88,15 @@ public class ProductController {
     ) {
         return productService.uploadProductImage(productId, uploadProductImageDto)
                 .map(ProductImageDto::fromEntity)
-                .map(p -> ResponseCodeMapper.toResponse(ResponseCode.ENABLE_PRODUCT, p))
+                .map(p -> ResponseCodeMapper.toResponse(ResponseCode.PRODUCT_IMAGE_UPLOADED, p))
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
+
+    @GetMapping("/{productId}/categories")
+    public ResponseEntity<Set<CategoryDto>> getCategoriesByProductId(@PathVariable UUID productId) {
+        return productService.getAllCategoriesByProductId(productId)
+                .map(categories -> categories.stream().map(CategoryDto::fromEntity).collect(Collectors.toSet()))
+                .map(ResponseEntity::ok)
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 }

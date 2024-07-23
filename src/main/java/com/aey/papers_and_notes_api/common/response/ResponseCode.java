@@ -7,14 +7,17 @@ public enum ResponseCode {
 
     //Products
     ASSOCIATE_PRODUCT(200, "Associate product", "Product associated with a category"),
-    DISABLE_PRODUCT(200, "Disable product", "Product was disabled successfully"),
-    ENABLE_PRODUCT(200, "Enable product", "Product was enable successfully"),
-    PRODUCT_CREATED(201, "Create product", "Product was successfully created"),
+    DISABLE_PRODUCT(200, "Product disabled", "Product was disabled successfully"),
+    ENABLE_PRODUCT(200, "Product enabled", "Product was enable successfully"),
+    CREATE_PRODUCT(201, "Product created", "Product was successfully created"),
+
+    //Product image
+    PRODUCT_IMAGE_UPLOADED(201, "Product image uploaded", "Product image was successfully uploaded"),
 
     //Categories
-    CATEGORY_UPDATED(200, "Update category", "Category was successfully updated"),
+    UPDATE_CATEGORY(200, "Update category", "Category was successfully updated"),
     DISABLE_CATEGORY(200, "Disable category", "Category was disabled successfully"),
-    CATEGORY_CREATED(201, "Create category", "Category was successfully created"),
+    CREATE_CATEGORY(201, "Create category", "Category was successfully created"),
     ;
 
     private final Integer statusCode;

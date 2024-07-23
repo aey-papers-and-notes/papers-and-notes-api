@@ -45,23 +45,13 @@ public class CategoryController {
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<Set<CategoryDto>> getCategoriesByProductId(@PathVariable UUID productId) {
-        return ResponseEntity.ok(
-                categoryService.getAllCategoriesByProductId(productId)
-                        .stream()
-                        .map(CategoryDto::fromEntity)
-                        .collect(Collectors.toSet())
-        );
-    }
-
     @PostMapping()
     public ResponseEntity<ResponseCodeDto<CategoryDto>> createCategory(
             @Valid @RequestBody CreateCategoryDto createCategoryDto
     ) {
         return categoryService.createCategory(createCategoryDto)
                 .map(CategoryDto::fromEntity)
-                .map((c) -> ResponseCodeMapper.toResponse(ResponseCode.CATEGORY_CREATED, c))
+                .map((c) -> ResponseCodeMapper.toResponse(ResponseCode.CREATE_CATEGORY, c))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
@@ -69,7 +59,7 @@ public class CategoryController {
     public ResponseEntity<ResponseCodeDto<CategoryDto>> updateCategory(@PathVariable Integer categoryId, @RequestBody UpdateCategoryDto categoryDto) {
         return categoryService.updateCategory(categoryId, categoryDto)
                 .map(CategoryDto::fromEntity)
-                .map((c) -> ResponseCodeMapper.toResponse(ResponseCode.CATEGORY_UPDATED, c))
+                .map((c) -> ResponseCodeMapper.toResponse(ResponseCode.UPDATE_CATEGORY, c))
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
