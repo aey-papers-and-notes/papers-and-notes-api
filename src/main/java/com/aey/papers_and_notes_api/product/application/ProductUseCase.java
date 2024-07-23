@@ -184,6 +184,15 @@ public class ProductUseCase implements ProductService {
         return productImageService.uploadProductImage(product.get().getProductId(), uploadProductImageDto);
     }
 
+    @Override
+    public Either<ErrorCode, Set<Category>> getAllCategoriesByProductId(UUID productId) {
+        Either<ErrorCode, Product> product = getProductById(productId);
+        if (product.isLeft()) {
+            return Either.left(product.getLeft());
+        }
+        return Either.right(categoryService.getAllCategoriesByProductId(productId));
+    }
+
     private Product fillProduct(UUID productId, Product product) {
         List<ProductImage> productImages = productImageService.getAllProductImagesByProductId(productId);
         Set<Category> categories = categoryService.getAllCategoriesByProductId(productId);
