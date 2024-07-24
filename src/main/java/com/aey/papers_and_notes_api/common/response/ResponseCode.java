@@ -13,6 +13,7 @@ public enum ResponseCode {
 
     //Product image
     PRODUCT_IMAGE_UPLOADED(201, "Product image uploaded", "Product image was successfully uploaded"),
+    PRODUCT_IMAGE_DELETED(200, "Product image deleted", "Product image was successfully uploaded"),
 
     //Categories
     UPDATE_CATEGORY(200, "Update category", "Category was successfully updated"),

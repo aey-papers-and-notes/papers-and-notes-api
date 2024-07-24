@@ -92,6 +92,17 @@ public class ProductController {
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
+    @DeleteMapping("/{productId}/images/{imageId}")
+    public ResponseEntity<ResponseCodeDto<ProductImageDto>> deleteProductImage(
+            @PathVariable UUID productId,
+            @PathVariable Integer imageId
+    ) {
+        return productService.deleteProductImage(productId, imageId)
+                .map(ProductImageDto::fromEntity)
+                .map((i) -> ResponseCodeMapper.toResponse(ResponseCode.PRODUCT_IMAGE_DELETED, i))
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
+
     @GetMapping("/{productId}/categories")
     public ResponseEntity<Set<CategoryDto>> getCategoriesByProductId(@PathVariable UUID productId) {
         return productService.getAllCategoriesByProductId(productId)

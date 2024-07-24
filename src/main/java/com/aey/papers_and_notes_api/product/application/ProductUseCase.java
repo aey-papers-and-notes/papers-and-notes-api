@@ -185,6 +185,15 @@ public class ProductUseCase implements ProductService {
     }
 
     @Override
+    public Either<ErrorCode, ProductImage> deleteProductImage(UUID productId, Integer imageId) {
+        Either<ErrorCode, Product> product = getProductById(productId);
+        if (product.isLeft()) {
+            return Either.left(product.getLeft());
+        }
+        return productImageService.deleteProductImage(imageId);
+    }
+
+    @Override
     public Either<ErrorCode, Set<Category>> getAllCategoriesByProductId(UUID productId) {
         Either<ErrorCode, Product> product = getProductById(productId);
         if (product.isLeft()) {

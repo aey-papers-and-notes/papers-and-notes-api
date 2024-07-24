@@ -11,7 +11,8 @@ import java.util.UUID;
 
 public interface ProductImageService {
     List<ProductImage> getAllProductImagesByProductId(UUID productId);
+    Either<ErrorCode, ProductImage> getProductImageById(Integer imageId);
     Either<ErrorCode, ProductImage> saveProductImage(ProductImage productImage);
     Either<ErrorCode, ProductImage> uploadProductImage(UUID productId, UploadProductImageDto uploadProductImageDto);
-    Either<ErrorCode, ProductImage> deleteProductImageURL(Integer id, UUID productId);
+    Either<ErrorCode, ProductImage> deleteProductImage(Integer imageId);
 }

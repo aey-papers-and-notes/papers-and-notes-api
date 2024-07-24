@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,6 +25,17 @@ public class ProductImageUseCase implements ProductImageService {
     @Override
     public List<ProductImage> getAllProductImagesByProductId(UUID productId) {
         return productImageRepository.findAllProductImagesByProductId(productId);
+    }
+
+    @Override
+    public Either<ErrorCode, ProductImage> getProductImageById(Integer imageId) {
+        Optional<ProductImage> productImage = productImageRepository.findProductImageById(imageId);
+        if (productImage.isEmpty()) {
+            return Either.left(ErrorCode.PRODUCT_IMAGE_NOT_FOUND);
+        }
+        return productImage
+                .<Either<ErrorCode, ProductImage>>map(Either::right)
+                .orElseGet(() -> Either.left(ErrorCode.ERROR));
     }
 
     @Override
@@ -48,7 +60,13 @@ public class ProductImageUseCase implements ProductImageService {
     }
 
     @Override
-    public Either<ErrorCode, ProductImage> deleteProductImageURL(Integer id, UUID productId) {
-        return null;
+    @Transactional
+    public Either<ErrorCode, ProductImage> deleteProductImage(Integer imageId) {
+        Either<ErrorCode, ProductImage> productImage = getProductImageById(imageId);
+        if (productImage.isLeft()) {
+            return Either.left(productImage.getLeft());
+        }
+        productImageRepository.deleteProductImage(productImage.get().getImageId());
+        return Either.right(productImage.get());
     }
 }
