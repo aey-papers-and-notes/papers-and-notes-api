@@ -78,15 +78,6 @@ public class ProductDao implements ProductRepository {
     }
 
     @Override
-    public Optional<Product> updateProductState(Product product) {
-        return Optional.of(
-                productJpaRepository
-                        .save(ProductJpa.fromEntity(product))
-                        .toEntity()
-        );
-    }
-
-    @Override
     public Optional<Product> updateProduct(Product product) {
         return Optional.of(
                 productJpaRepository

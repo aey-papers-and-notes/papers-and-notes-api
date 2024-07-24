@@ -110,4 +110,16 @@ public class ProductController {
                 .map(ResponseEntity::ok)
                 .getOrElseGet(ErrorMapper::toResponse);
     }
+
+    @PostMapping("/{productId}/categories/add")
+    public ResponseEntity<ResponseCodeDto<ProductDto>> addCategoriesToProduct(
+            @PathVariable UUID productId,
+            @Valid @RequestBody ProductCategoryAssociationDto productCategoryAssociationDto
+    ) {
+        return productService.addCategoriesToProduct(productId, productCategoryAssociationDto)
+                .map(ProductDto::fromEntity)
+                .map((p) -> ResponseCodeMapper.toResponse(ResponseCode.PRODUCT_CATEGORY_ASSOCIATION, p))
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
+
 }
