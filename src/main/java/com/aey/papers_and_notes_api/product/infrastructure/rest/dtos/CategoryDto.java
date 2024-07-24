@@ -43,4 +43,15 @@ public class CategoryDto {
                 .updatedAt(category.getUpdatedAt())
                 .build();
     }
+
+    public Category toEntity() {
+        return Category.builder()
+                .categoryId(categoryId)
+                .name(name)
+                .description(description)
+                .isActive(isActive)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
+    }
 }

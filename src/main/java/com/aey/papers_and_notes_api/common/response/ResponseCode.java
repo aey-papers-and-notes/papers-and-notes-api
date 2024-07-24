@@ -6,10 +6,10 @@ import lombok.Getter;
 public enum ResponseCode {
 
     //Products
-    ASSOCIATE_PRODUCT(200, "Associate product", "Product associated with a category"),
     DISABLE_PRODUCT(200, "Product disabled", "Product was disabled successfully"),
     ENABLE_PRODUCT(200, "Product enabled", "Product was enable successfully"),
     PRODUCT_CATEGORY_ASSOCIATION(200, "Category associated", "Categories have been correctly associated with the product"),
+    PRODUCT_CATEGORY_REMOVE(200, "Category removed", "Categories have been correctly removed with the product"),
     CREATE_PRODUCT(201, "Product created", "Product was successfully created"),
 
     //Product image

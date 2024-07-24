@@ -25,4 +25,5 @@ public interface ProductService {
     Either<ErrorCode, ProductImage> deleteProductImage(UUID productId, Integer imageId);
     Either<ErrorCode, Set<Category>> getAllCategoriesByProductId(UUID productId);
     Either<ErrorCode, Product> addCategoriesToProduct(UUID productId, ProductCategoryAssociationDto productCategoryAssociationDto);
+    Either<ErrorCode, Product> removeCategoriesToProduct(UUID productId, ProductCategoryAssociationDto productCategoryAssociationDto);
 }
