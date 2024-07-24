@@ -77,7 +77,7 @@ public class ProductUseCase implements ProductService {
         Set<Category> categories = new HashSet<>();
         List<ProductImage> images = new ArrayList<>();
         if (!createProductDto.getCategories().isEmpty()) {
-            for (AssociateCategoryDto categoryDto : createProductDto.getCategories()) {
+            for (CategoryDto categoryDto : createProductDto.getCategories()) {
                 var category = categoryService.getCategoryById(categoryDto.getCategoryId());
                 if (category.isRight()) {
                     categories.add(category.get());
@@ -155,7 +155,7 @@ public class ProductUseCase implements ProductService {
         Product productUpdate = product.get();
         productUpdate.setIsActive(Boolean.FALSE);
         productUpdate.setUpdatedAt(new Date());
-        return productRepository.updateProductState(productUpdate)
+        return productRepository.updateProduct(productUpdate)
                 .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
                 .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
     }
@@ -170,7 +170,7 @@ public class ProductUseCase implements ProductService {
         Product productUpdate = product.get();
         productUpdate.setIsActive(Boolean.TRUE);
         productUpdate.setUpdatedAt(new Date());
-        return productRepository.updateProductState(productUpdate)
+        return productRepository.updateProduct(productUpdate)
                 .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
                 .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
     }
@@ -200,6 +200,31 @@ public class ProductUseCase implements ProductService {
             return Either.left(product.getLeft());
         }
         return Either.right(categoryService.getAllCategoriesByProductId(productId));
+    }
+
+    @Override
+    @Transactional
+    public Either<ErrorCode, Product> addCategoriesToProduct(UUID productId, ProductCategoryAssociationDto productCategoryAssociationDto) {
+        Either<ErrorCode, Product> product = getProductById(productId);
+        if (product.isLeft()) {
+            return Either.left(product.getLeft());
+        }
+        Set<Category> categories = new HashSet<>();
+        if (!product.get().getCategories().isEmpty()) {
+            categories.addAll(product.get().getCategories());
+        }
+        for (CategoryDto categoryDto : productCategoryAssociationDto.getCategories()) {
+            Either<ErrorCode, Category> category = categoryService.getCategoryById(categoryDto.getCategoryId());
+            if (category.isLeft()) {
+                return Either.left(category.getLeft());
+            } else {
+                categories.add(category.get());
+            }
+        }
+        product.get().setCategories(categories);
+        return productRepository.updateProduct(product.get())
+                .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
+                .orElseGet(() -> Either.left(ErrorCode.ERROR));
     }
 
     private Product fillProduct(UUID productId, Product product) {

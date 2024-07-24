@@ -6,6 +6,7 @@ import com.aey.papers_and_notes_api.product.domain.entities.Category;
 import com.aey.papers_and_notes_api.product.domain.entities.Product;
 import com.aey.papers_and_notes_api.product.domain.entities.ProductImage;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateProductDto;
+import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.ProductCategoryAssociationDto;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.UpdateProductDto;
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.UploadProductImageDto;
 import io.vavr.control.Either;
@@ -23,4 +24,5 @@ public interface ProductService {
     Either<ErrorCode, ProductImage> uploadProductImage(UUID productId, UploadProductImageDto productImage);
     Either<ErrorCode, ProductImage> deleteProductImage(UUID productId, Integer imageId);
     Either<ErrorCode, Set<Category>> getAllCategoriesByProductId(UUID productId);
+    Either<ErrorCode, Product> addCategoriesToProduct(UUID productId, ProductCategoryAssociationDto productCategoryAssociationDto);
 }

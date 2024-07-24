@@ -43,7 +43,7 @@ public class CreateProductDto {
     private List<UploadProductImageDto> productImages;
 
     @JsonProperty
-    private List<AssociateCategoryDto> categories;
+    private List<CategoryDto> categories;
 
 
     public static CreateProductDto fromEntity(Product product) {
