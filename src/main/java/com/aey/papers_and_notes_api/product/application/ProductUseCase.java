@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductUseCase implements ProductService {
@@ -223,6 +224,38 @@ public class ProductUseCase implements ProductService {
         }
         product.get().setCategories(categories);
         return productRepository.updateProduct(product.get())
+                .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
+                .orElseGet(() -> Either.left(ErrorCode.ERROR));
+    }
+
+    @Override
+    @Transactional
+    public Either<ErrorCode, Product> removeCategoriesToProduct(UUID productId, ProductCategoryAssociationDto productCategoryAssociationDto) {
+        Either<ErrorCode, Product> productEither = getProductById(productId);
+        if (productEither.isLeft()) {
+            return Either.left(productEither.getLeft());
+        }
+
+        Product product = productEither.get();
+        Set<Integer> existingCategoryIds = product.getCategories().stream()
+                .map(Category::getCategoryId)
+                .collect(Collectors.toSet());
+
+        Set<Integer> categoryIdsToRemove = productCategoryAssociationDto.getCategories().stream()
+                .map(CategoryDto::getCategoryId)
+                .collect(Collectors.toSet());
+
+        existingCategoryIds.removeAll(categoryIdsToRemove);
+
+        Set<Category> updatedCategories = existingCategoryIds.stream()
+                .map(categoryService::getCategoryById)
+                .filter(Either::isRight)
+                .map(Either::get)
+                .collect(Collectors.toSet());
+
+        product.setCategories(updatedCategories);
+
+        return productRepository.updateProduct(product)
                 .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
                 .orElseGet(() -> Either.left(ErrorCode.ERROR));
     }

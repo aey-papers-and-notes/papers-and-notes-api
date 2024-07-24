@@ -122,4 +122,14 @@ public class ProductController {
                 .getOrElseGet(ErrorMapper::toResponse);
     }
 
+    @PostMapping("/{productId}/categories/remove")
+    public ResponseEntity<ResponseCodeDto<ProductDto>> removeCategoriesFromProduct(
+            @PathVariable UUID productId,
+            @Valid @RequestBody ProductCategoryAssociationDto productCategoryAssociationDto
+    ) {
+        return productService.removeCategoriesToProduct(productId, productCategoryAssociationDto)
+                .map(ProductDto::fromEntity)
+                .map((p) -> ResponseCodeMapper.toResponse(ResponseCode.PRODUCT_CATEGORY_REMOVE, p))
+                .getOrElseGet(ErrorMapper::toResponse);
+    }
 }
