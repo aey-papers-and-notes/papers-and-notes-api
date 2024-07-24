@@ -21,5 +21,6 @@ public interface ProductService {
     Either<ErrorCode, Product> disableProduct(UUID productId);
     Either<ErrorCode, Product> enableProduct(UUID productId);
     Either<ErrorCode, ProductImage> uploadProductImage(UUID productId, UploadProductImageDto productImage);
+    Either<ErrorCode, ProductImage> deleteProductImage(UUID productId, Integer imageId);
     Either<ErrorCode, Set<Category>> getAllCategoriesByProductId(UUID productId);
 }

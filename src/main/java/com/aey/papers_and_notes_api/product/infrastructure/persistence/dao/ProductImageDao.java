@@ -60,4 +60,9 @@ public class ProductImageDao implements ProductImageRepository {
         return Optional.of(productImageJpaRepository.saveAndFlush(ProductImageJpa.fromEntity(productImage)).toEntity());
     }
 
+    @Override
+    public void deleteProductImage(Integer imageId) {
+        productImageJpaRepository.deleteById(imageId);
+    }
+
 }

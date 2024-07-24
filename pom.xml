@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.aey</groupId>
 	<artifactId>papers-and-notes-api</artifactId>
-	<version>0.0.23</version>
+	<version>0.0.24</version>
 	<packaging>war</packaging>
 	<name>papers-and-notes-api</name>
 	<description>Backend application for manage products</description>

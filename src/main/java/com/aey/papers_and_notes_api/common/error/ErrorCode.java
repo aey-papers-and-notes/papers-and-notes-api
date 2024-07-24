@@ -21,6 +21,9 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND(404, "Not Found", "Product not found"),
     PRODUCT_NOT_AVAILABLE(404, "Not Found", "Product not available"),
 
+    //Product images
+    PRODUCT_IMAGE_NOT_FOUND(404, "Not Found", "Product image not found"),
+
     //Categories
     CATEGORY_NOT_FOUND(404, "Not Found", "Category not found"),
     CATEGORY_NOT_AVAILABLE(404, "Not Found", "Category not available"),

@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface ProductImageRepository {
     List<ProductImage> findAllProductImagesByProductId(UUID productId);
+    Optional<ProductImage> findProductImageById(Integer imageId);
     Optional<ProductImage> saveProductImage(ProductImage productImage);
-    Optional<ProductImage> findProductImageById(Integer productImageId);
+    void deleteProductImage(Integer imageId);
 }
