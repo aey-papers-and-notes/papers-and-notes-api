@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @Getter
@@ -37,7 +37,7 @@ public class CategoryJpa {
     private Date updatedAt;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
-    private Set<ProductJpa> products;
+    private List<ProductJpa> products;
 
     public static CategoryJpa fromEntity(Category category) {
         return CategoryJpa.builder()

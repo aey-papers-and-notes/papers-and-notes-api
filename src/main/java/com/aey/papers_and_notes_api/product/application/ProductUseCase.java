@@ -44,7 +44,7 @@ public class ProductUseCase implements ProductService {
                 .peek(product -> {
                     List<ProductImage> productImages = productImageService.getAllProductImagesByProductId(product.getProductId());
                     product.setProductImages(productImages);
-                    Set<Category> categories = categoryService.getAllCategoriesByProductId(product.getProductId());
+                    List<Category> categories = categoryService.getAllCategoriesByProductId(product.getProductId());
                     product.setCategories(categories);
                 })
                 .toList();
@@ -75,7 +75,7 @@ public class ProductUseCase implements ProductService {
     @Override
     @Transactional
     public Either<ErrorCode, Product> createProduct(CreateProductDto createProductDto) {
-        Set<Category> categories = new HashSet<>();
+        List<Category> categories = new ArrayList<>();
         List<ProductImage> images = new ArrayList<>();
         if (!createProductDto.getCategories().isEmpty()) {
             for (CategoryDto categoryDto : createProductDto.getCategories()) {
@@ -195,7 +195,7 @@ public class ProductUseCase implements ProductService {
     }
 
     @Override
-    public Either<ErrorCode, Set<Category>> getAllCategoriesByProductId(UUID productId) {
+    public Either<ErrorCode, List<Category>> getAllCategoriesByProductId(UUID productId) {
         Either<ErrorCode, Product> product = getProductById(productId);
         if (product.isLeft()) {
             return Either.left(product.getLeft());
@@ -210,7 +210,7 @@ public class ProductUseCase implements ProductService {
         if (product.isLeft()) {
             return Either.left(product.getLeft());
         }
-        Set<Category> categories = new HashSet<>();
+        List<Category> categories = new ArrayList<>();
         if (!product.get().getCategories().isEmpty()) {
             categories.addAll(product.get().getCategories());
         }
@@ -245,13 +245,16 @@ public class ProductUseCase implements ProductService {
                 .map(CategoryDto::getCategoryId)
                 .collect(Collectors.toSet());
 
-        existingCategoryIds.removeAll(categoryIdsToRemove);
+        boolean removeSome = existingCategoryIds.removeAll(categoryIdsToRemove);
+        if(!removeSome) {
+            return Either.left(ErrorCode.CATEGORY_NOT_ASSOCIATED);
+        }
 
-        Set<Category> updatedCategories = existingCategoryIds.stream()
+        List<Category> updatedCategories = existingCategoryIds.stream()
                 .map(categoryService::getCategoryById)
                 .filter(Either::isRight)
                 .map(Either::get)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         product.setCategories(updatedCategories);
 
@@ -262,7 +265,7 @@ public class ProductUseCase implements ProductService {
 
     private Product fillProduct(UUID productId, Product product) {
         List<ProductImage> productImages = productImageService.getAllProductImagesByProductId(productId);
-        Set<Category> categories = categoryService.getAllCategoriesByProductId(productId);
+        List<Category> categories = categoryService.getAllCategoriesByProductId(productId);
         product.setProductImages(productImages);
         product.setCategories(categories);
         return product;

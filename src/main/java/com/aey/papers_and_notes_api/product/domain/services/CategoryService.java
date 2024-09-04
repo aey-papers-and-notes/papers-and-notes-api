@@ -7,14 +7,14 @@ import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.CreateCateg
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.UpdateCategoryDto;
 import io.vavr.control.Either;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 
 public interface CategoryService {
     Pagination<Category> getAllCategories(Integer limit, Integer offset);
     Either<ErrorCode, Category> getCategoryById(Integer categoryId);
-    Set<Category> getAllCategoriesByProductId(UUID productId);
+    List<Category> getAllCategoriesByProductId(UUID productId);
     Either<ErrorCode, Category> createCategory(CreateCategoryDto createCategoryDto);
     Either<ErrorCode, Category> updateCategory(Integer categoryId, UpdateCategoryDto category);
     Either<ErrorCode, Category> disableCategory(Integer categoryId);

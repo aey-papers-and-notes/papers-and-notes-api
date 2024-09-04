@@ -24,7 +24,7 @@ public class CategoryDao implements CategoryRepository {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Set<Category> findAllCategories(Integer limit, Integer offset) {
+    public List<Category> findAllCategories(Integer limit, Integer offset) {
         List<Object[]> result = entityManager
                 .createNativeQuery(CategoryQuery.PAGINATION_CATEGORIES)
                 .setParameter(CategoryQuery.PARAM_CATEGORY_LIMIT, limit)
@@ -50,12 +50,11 @@ public class CategoryDao implements CategoryRepository {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Set<Category> findAllCategoriesByProductId(UUID productId) {
+    public List<Category> findAllCategoriesByProductId(UUID productId) {
         List<Object[]> result = entityManager
                 .createNativeQuery(CategoryQuery.CATEGORIES_BY_PRODUCT_ID)
                 .setParameter(CategoryQuery.PARAM_PRODUCT_ID, productId)
                 .getResultList();
-
         return getCategories(result);
     }
 
@@ -86,9 +85,9 @@ public class CategoryDao implements CategoryRepository {
         );
     }
 
-    private Set<Category> getCategories(List<Object[]> result) {
+    private List<Category> getCategories(List<Object[]> result) {
         if (result.isEmpty()) {
-            return new HashSet<>();
+            return new ArrayList<>();
         }
         return result.stream().map(r -> Category.builder()
                 .categoryId((Integer) r[0])
@@ -98,6 +97,6 @@ public class CategoryDao implements CategoryRepository {
                 .createdAt((Date) r[4])
                 .updatedAt((Date) r[5])
                 .build()
-        ).collect(Collectors.toSet());
+        ).collect(Collectors.toList());
     }
 }
