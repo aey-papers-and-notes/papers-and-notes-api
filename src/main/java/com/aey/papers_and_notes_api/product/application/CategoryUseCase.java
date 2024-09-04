@@ -49,7 +49,7 @@ public class CategoryUseCase implements CategoryService {
     }
 
     @Override
-    public Set<Category> getAllCategoriesByProductId(UUID productId) {
+    public List<Category> getAllCategoriesByProductId(UUID productId) {
         return categoryRepository.findAllCategoriesByProductId(productId);
     }
 

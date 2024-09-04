@@ -11,7 +11,7 @@ import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.UpdateProdu
 import com.aey.papers_and_notes_api.product.infrastructure.rest.dtos.UploadProductImageDto;
 import io.vavr.control.Either;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 public interface ProductService {
@@ -23,7 +23,7 @@ public interface ProductService {
     Either<ErrorCode, Product> enableProduct(UUID productId);
     Either<ErrorCode, ProductImage> uploadProductImage(UUID productId, UploadProductImageDto productImage);
     Either<ErrorCode, ProductImage> deleteProductImage(UUID productId, Integer imageId);
-    Either<ErrorCode, Set<Category>> getAllCategoriesByProductId(UUID productId);
+    Either<ErrorCode, List<Category>> getAllCategoriesByProductId(UUID productId);
     Either<ErrorCode, Product> addCategoriesToProduct(UUID productId, ProductCategoryAssociationDto productCategoryAssociationDto);
     Either<ErrorCode, Product> removeCategoriesToProduct(UUID productId, ProductCategoryAssociationDto productCategoryAssociationDto);
 }

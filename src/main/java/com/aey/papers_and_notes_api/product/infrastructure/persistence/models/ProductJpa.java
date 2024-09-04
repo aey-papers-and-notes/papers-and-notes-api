@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -63,7 +63,7 @@ public class ProductJpa implements Serializable {
             joinColumns = @JoinColumn(name = "rpc_fk_product_id", referencedColumnName = "product_id"),
             inverseJoinColumns =  @JoinColumn(name = "rpc_fk_category_id", referencedColumnName = "category_id")
     )
-    private Set<CategoryJpa> categories;
+    private List<CategoryJpa> categories;
 
     public static ProductJpa fromEntity(Product product) {
         return ProductJpa.builder()
@@ -76,7 +76,7 @@ public class ProductJpa implements Serializable {
                 .updatedAt(product.getUpdatedAt())
                 .isActive(product.getIsActive())
                 .brandId(product.getBrandId())
-                .categories(product.getCategories().stream().map(CategoryJpa::fromEntity).collect(Collectors.toSet()))
+                .categories(product.getCategories().stream().map(CategoryJpa::fromEntity).collect(Collectors.toList()))
                 .build();
     }
 
@@ -91,7 +91,7 @@ public class ProductJpa implements Serializable {
                 .updatedAt(updatedAt)
                 .isActive(isActive)
                 .brandId(brandId)
-                .categories(categories.stream().map(CategoryJpa::toEntity).collect(Collectors.toSet()))
+                .categories(categories.stream().map(CategoryJpa::toEntity).collect(Collectors.toList()))
                 .build();
     }
 }

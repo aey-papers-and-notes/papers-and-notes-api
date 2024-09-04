@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -48,7 +47,7 @@ public class ProductDto {
     private List<ProductImageDto> productImages;
 
     @JsonProperty
-    private Set<CategoryDto> categories;
+    private List<CategoryDto> categories;
 
 
     public static ProductDto fromEntity(Product product) {
@@ -63,7 +62,7 @@ public class ProductDto {
                 .isActive(product.getIsActive())
                 .brandId(product.getBrandId())
                 .productImages(product.getProductImages().stream().map(ProductImageDto::fromEntity).toList())
-                .categories(product.getCategories().stream().map(CategoryDto::fromEntity).collect(Collectors.toSet()))
+                .categories(product.getCategories().stream().map(CategoryDto::fromEntity).collect(Collectors.toList()))
                 .build();
     }
 

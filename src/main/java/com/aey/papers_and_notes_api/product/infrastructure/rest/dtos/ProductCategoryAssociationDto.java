@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @Getter
@@ -12,9 +12,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductCategoryAssociationDto {
-
     @JsonProperty
     @NotNull(message = "Category id must be not null")
-    private Set<CategoryDto> categories;
+    private List<CategoryDto> categories;
 
 }
