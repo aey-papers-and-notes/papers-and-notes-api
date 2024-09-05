@@ -218,11 +218,15 @@ public class ProductUseCase implements ProductService {
             Either<ErrorCode, Category> category = categoryService.getCategoryById(categoryDto.getCategoryId());
             if (category.isLeft()) {
                 return Either.left(category.getLeft());
+            }
+            List<Integer> ids = categories.stream().map(Category::getCategoryId).toList();
+            if (ids.contains(categoryDto.getCategoryId())) {
+                return Either.left(ErrorCode.CATEGORY_ALREADY_ASSOCIATED);
             } else {
                 categories.add(category.get());
             }
         }
-        product.get().setCategories(categories);
+        product.get().setCategories(categories.stream().toList());
         return productRepository.updateProduct(product.get())
                 .<Either<ErrorCode, Product>>map(p -> Either.right(fillProduct(productId, p)))
                 .orElseGet(() -> Either.left(ErrorCode.ERROR));

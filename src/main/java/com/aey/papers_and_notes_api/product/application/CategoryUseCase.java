@@ -65,7 +65,7 @@ public class CategoryUseCase implements CategoryService {
                 .build();
         return categoryRepository.createCategory(category)
                 .<Either<ErrorCode, Category>>map(Either::right)
-                .orElseGet(() -> Either.left(ErrorCode.CATEGORY_ERROR));
+                .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class CategoryUseCase implements CategoryService {
         categoryUpdate.setUpdatedAt(new Date());
         return categoryRepository.updateCategoryState(categoryUpdate)
                 .<Either<ErrorCode, Category>>map(Either::right)
-                .orElseGet(() -> Either.left(ErrorCode.CATEGORY_ERROR));
+                .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
     }
 
     @Override
@@ -116,7 +116,7 @@ public class CategoryUseCase implements CategoryService {
         categoryUpdate.setUpdatedAt(new Date());
         return categoryRepository.updateCategoryState(categoryUpdate)
                 .<Either<ErrorCode, Category>>map(Either::right)
-                .orElseGet(() -> Either.left(ErrorCode.CATEGORY_ERROR));
+                .orElseGet(() -> Either.left(ErrorCode.INTERNAL_SERVER_ERROR));
     }
 
 
