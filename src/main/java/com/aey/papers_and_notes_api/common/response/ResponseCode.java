@@ -11,6 +11,7 @@ public enum ResponseCode {
     PRODUCT_CATEGORY_ASSOCIATION(200, "Category associated", "Categories have been correctly associated with the product"),
     PRODUCT_CATEGORY_REMOVE(200, "Category removed", "Categories have been correctly removed with the product"),
     CREATE_PRODUCT(201, "Product created", "Product was successfully created"),
+    UPDATE_PRODUCT(200, "Product updated", "Product was successfully updated"),
 
     //Product image
     PRODUCT_IMAGE_UPLOADED(201, "Product image uploaded", "Product image was successfully uploaded"),

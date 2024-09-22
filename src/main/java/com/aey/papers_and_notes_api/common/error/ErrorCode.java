@@ -19,14 +19,14 @@ public enum ErrorCode {
 
     //Products
     PRODUCT_NOT_FOUND(404, "Not Found", "Product not found"),
-    PRODUCT_NOT_AVAILABLE(404, "Not Found", "Product not available"),
+    PRODUCT_NOT_AVAILABLE(400, "Bad Request", "Product not available"),
 
     //Product images
     PRODUCT_IMAGE_NOT_FOUND(404, "Not Found", "Product image not found"),
 
     //Categories
     CATEGORY_NOT_FOUND(404, "Not Found", "Category not found"),
-    CATEGORY_NOT_AVAILABLE(404, "Not Found", "Category not available"),
+    CATEGORY_NOT_AVAILABLE(400, "Bad Request", "Category not available"),
     CATEGORY_NOT_ASSOCIATED(400, "Not Associated", "Some of the categories are not associated with that product"),
     CATEGORY_ALREADY_ASSOCIATED(400, "Already Associated", "Some of the categories are already associated with that product"),
     ;
