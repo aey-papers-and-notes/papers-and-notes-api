@@ -60,14 +60,12 @@ public class ProductUseCase implements ProductService {
     @Override
     public Either<ErrorCode, Product> getProductById(UUID productId) {
         Optional<Product> product = productRepository.findOneProductById(productId);
-
         if (product.isEmpty()) {
             return Either.left(ErrorCode.PRODUCT_NOT_FOUND);
         }
         if (product.get().getIsActive().equals(Boolean.FALSE)) {
             return Either.left(ErrorCode.PRODUCT_NOT_AVAILABLE);
         }
-
         Product productFound = fillProduct(productId, product.get());
         return Either.right(productFound);
     }
@@ -79,7 +77,8 @@ public class ProductUseCase implements ProductService {
         List<ProductImage> images = new ArrayList<>();
         if (!createProductDto.getCategories().isEmpty()) {
             for (CategoryDto categoryDto : createProductDto.getCategories()) {
-                var category = categoryService.getCategoryById(categoryDto.getCategoryId());
+                Either<ErrorCode, Category> category = categoryService
+                        .getCategoryById(categoryDto.getCategoryId());
                 if (category.isRight()) {
                     categories.add(category.get());
                 } else {
@@ -105,12 +104,12 @@ public class ProductUseCase implements ProductService {
         }
         if (!createProductDto.getProductImages().isEmpty()) {
             for (UploadProductImageDto imageDto: createProductDto.getProductImages()) {
-                var image = ProductImage.builder()
+                ProductImage image = ProductImage.builder()
                         .url(imageDto.getUrl())
                         .description(imageDto.getDescription())
                         .productId(newProduct.get().getProductId())
                         .build();
-                var imageSaved = productImageService.saveProductImage(image);
+                Either<ErrorCode, ProductImage> imageSaved = productImageService.saveProductImage(image);
                 if (imageSaved.isLeft()) {
                     return Either.left(imageSaved.getLeft());
                 }
@@ -125,7 +124,7 @@ public class ProductUseCase implements ProductService {
     @Override
     @Transactional
     public Either<ErrorCode, Product> updateProduct(UUID productId, UpdateProductDto updateProductDto) {
-        var productFound = getProductById(productId);
+        Either<ErrorCode, Product> productFound = getProductById(productId);
         if (productFound.isLeft()) {
             return Either.left(productFound.getLeft());
         }
@@ -164,9 +163,9 @@ public class ProductUseCase implements ProductService {
     @Override
     @Transactional
     public Either<ErrorCode, Product> enableProduct(UUID productId) {
-        Optional<Product> product = productRepository.findOneProductById(productId);
+        Either<ErrorCode, Product> product = getProductById(productId);
         if (product.isEmpty()) {
-            return Either.left(ErrorCode.PRODUCT_NOT_FOUND);
+            return Either.left(product.getLeft());
         }
         Product productUpdate = product.get();
         productUpdate.setIsActive(Boolean.TRUE);
